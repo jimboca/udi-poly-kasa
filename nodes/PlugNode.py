@@ -1,27 +1,21 @@
 
 import polyinterface
-from nodes import PlugNode
 
 LOGGER = polyinterface.LOGGER
 
-class SmartStripNode(polyinterface.Node):
 
-    def __init__(self, controller, address, name, dev):
-        self.dev = dev
+class PlugNode(polyinterface.Node):
+
+    def __init__(self, controller, parent, address, name, index):
         self.name = name
+        self.index = index
         self.debug_level = 0
-        self.l_debug('__init__','controller={}'.format(controller))
         # The strip is it's own parent since the plugs are it's children
-        super(SmartStripNode, self).__init__(self, address, address, name)
+        super(PlugNode, self).__init__(self, parent.address, address, name)
         self.controller = controller
 
     def start(self):
         self.setDriver('ST', 1)
-        for pnum in range(self.dev.num_children):
-            naddress = "{}{:02d}".format(self.address,pnum+1)
-            nname    = self.dev.get_alias(index=pnum)
-            self.l_info('start','adding plug num={} address={} name={}'.format(pnum,naddress,nname))
-            self.controller.addNode(PlugNode(self.controller, self, naddress, nname, pnum))
 
     def setOn(self, command):
         self.setDriver('ST', 1)
@@ -46,7 +40,7 @@ class SmartStripNode(polyinterface.Node):
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 2}]
-    id = 'smartstrip'
+    id = 'Plug'
     commands = {
         'DON': setOn,
         'DOF': setOff
