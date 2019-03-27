@@ -12,8 +12,8 @@ class Controller(polyinterface.Controller):
 
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
-        self.id = 'tplkasactl'
         self.name = 'TP-Link Kasa Controller'
+        self.address = 'tplkasactl'
         self.debug_level = 0 # TODO: More leves to add pyHS100 debugging (see discover.py)
 
     def start(self):
@@ -74,7 +74,7 @@ class Controller(polyinterface.Controller):
         if level <= self.debug_level:
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
-    id = 'tplkasactl'
+    id = 'TPLinkKasaController'
     commands = {
       'QUERY': query,
       'DISCOVER': discover,

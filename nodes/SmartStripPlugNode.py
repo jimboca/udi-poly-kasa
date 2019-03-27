@@ -40,7 +40,7 @@ class SmartStripPlugNode(polyinterface.Node):
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 2}]
-    id = 'smartstripslug'
+    id = 'SmartStripPlug'
     commands = {
         'DON': setOn,
         'DOF': setOff
