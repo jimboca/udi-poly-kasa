@@ -12,6 +12,7 @@ class Controller(polyinterface.Controller):
 
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
+        self.id = 'tplkasactl'
         self.name = 'TP-Link Kasa Controller'
         self.debug_level = 0 # TODO: More leves to add pyHS100 debugging (see discover.py)
 

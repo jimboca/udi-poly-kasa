@@ -1,6 +1,6 @@
 
 import polyinterface
-from nodes import PlugNode
+from nodes import SmartStripPlugNode
 
 LOGGER = polyinterface.LOGGER
 
@@ -21,7 +21,7 @@ class SmartStripNode(polyinterface.Node):
             naddress = "{}{:02d}".format(self.address,pnum+1)
             nname    = self.dev.get_alias(index=pnum)
             self.l_info('start','adding plug num={} address={} name={}'.format(pnum,naddress,nname))
-            self.controller.addNode(PlugNode(self.controller, self, naddress, nname, pnum))
+            self.controller.addNode(SmartStripPlugNode(self.controller, self, naddress, nname, pnum))
 
     def setOn(self, command):
         self.setDriver('ST', 1)

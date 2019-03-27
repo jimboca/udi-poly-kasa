@@ -4,14 +4,14 @@ import polyinterface
 LOGGER = polyinterface.LOGGER
 
 
-class PlugNode(polyinterface.Node):
+class SmartStripPlugNode(polyinterface.Node):
 
     def __init__(self, controller, parent, address, name, index):
         self.name = name
         self.index = index
         self.debug_level = 0
         # The strip is it's own parent since the plugs are it's children
-        super(PlugNode, self).__init__(self, parent.address, address, name)
+        super(SmartStripPlugNode, self).__init__(self, parent.address, address, name)
         self.controller = controller
 
     def start(self):
@@ -40,7 +40,7 @@ class PlugNode(polyinterface.Node):
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 2}]
-    id = 'Plug'
+    id = 'smartstripslug'
     commands = {
         'DON': setOn,
         'DOF': setOff
