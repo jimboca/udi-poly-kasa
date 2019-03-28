@@ -24,7 +24,7 @@ class SmartStripNode(polyinterface.Node):
             self.controller.addNode(SmartStripPlugNode(self.controller, self, naddress, nname, pnum))
 
     def setOn(self, command):
-        self.setDriver('ST', 1)
+        self.setDriver('ST', 100)
 
     def setOff(self, command):
         self.setDriver('ST', 0)
@@ -45,7 +45,7 @@ class SmartStripNode(polyinterface.Node):
         if level <= self.debug_level:
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
-    drivers = [{'driver': 'ST', 'value': 0, 'uom': 2}]
+    drivers = [{'driver': 'ST', 'value': 0, 'uom': 78}]
     id = 'SmartStrip'
     commands = {
         'DON': setOn,

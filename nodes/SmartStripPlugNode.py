@@ -10,20 +10,28 @@ class SmartStripPlugNode(polyinterface.Node):
         self.name = name
         self.index = index
         self.debug_level = 0
+        self.pobj = parent # super changes self.parent
         # The strip is it's own parent since the plugs are it's children
         super(SmartStripPlugNode, self).__init__(self, parent.address, address, name)
         self.controller = controller
 
     def start(self):
-        self.setDriver('ST', 1)
+        #self.setDriver('ST', 100)
+        self.query()
 
     def setOn(self, command):
-        self.setDriver('ST', 1)
+        self.setDriver('ST', 100)
+        self.pobj.dev.turn_on(index=self.index)
 
     def setOff(self, command):
         self.setDriver('ST', 0)
+        self.pobj.dev.turn_off(index=self.index)
 
     def query(self):
+        if self.pobj.dev.get_is_on(index=self.index):
+            self.setDriver('ST', 100)
+        else:
+            self.setDriver('ST', 0)
         self.reportDrivers()
 
     def l_info(self, name, string):
@@ -39,7 +47,7 @@ class SmartStripPlugNode(polyinterface.Node):
         if level <= self.debug_level:
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
-    drivers = [{'driver': 'ST', 'value': 0, 'uom': 2}]
+    drivers = [{'driver': 'ST', 'value': 0, 'uom': 78}]
     id = 'SmartStripPlug'
     commands = {
         'DON': setOn,

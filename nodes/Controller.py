@@ -14,10 +14,12 @@ class Controller(polyinterface.Controller):
         super(Controller, self).__init__(polyglot)
         self.name = 'TP-Link Kasa Controller'
         self.address = 'tplkasactl'
-        self.debug_level = 0 # TODO: More leves to add pyHS100 debugging (see discover.py)
+        self.primary = self.address
+        self.debug_level = 0 # TODO: More levels to add pyHS100 debugging (see discover.py)
 
     def start(self):
         LOGGER.info('Started TP-Link Kasa NodeServer')
+        self.setDriver('ST', 1)
         self.check_params()
         self.discover()
 
@@ -82,5 +84,5 @@ class Controller(polyinterface.Controller):
     }
     drivers = [
     {
-      'driver': 'ST', 'value': 0, 'uom': 2
+      'driver': 'ST', 'value': 1, 'uom': 2
     }]

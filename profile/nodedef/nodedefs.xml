@@ -4,8 +4,8 @@
     <nodeDef id="TPLinkKasaController" nls="ctl">
         <editors />
         <sts>
-			<st id="ST" editor="bool" />
-		</sts>
+	  <st id="ST" editor="bool" />
+	</sts>
         <cmds>
             <sends />
             <accepts>
@@ -19,7 +19,7 @@
     <nodeDef id="SmartStrip" nls="ss">
         <editors />
         <sts>
-            <st id="ST" editor="bool" />
+            <st id="ST" editor="onoff" />
         </sts>
         <cmds>
             <sends />
@@ -33,7 +33,7 @@
     <nodeDef id="SmartStripPlug" nls="ssp">
         <editors />
         <sts>
-            <st id="ST" editor="bool" />
+            <st id="ST" editor="onoff" />
         </sts>
         <cmds>
             <sends />

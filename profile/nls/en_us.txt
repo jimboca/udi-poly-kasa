@@ -1,12 +1,15 @@
 # controller
-ND-controller-NAME = Template NodeServer Controller
+ND-TPLinkKasaController-NAME = TP Link Kasa Controller
+nD-TPLinkKasaController-ICON = GenericCtl
 CMD-ctl-QUERY"-NAME = Query
-CMD-ctl-DISCOVER-NAME = Re-Discover
+CMD-ctl-DISCOVER-NAME = Discover
 CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
 ST-ctl-ST-NAME = NodeServer Online
 
-ND-ss-NAME = Smart Strip
+ND-SmartStrip-NAME = Smart Strip
+ND-SmartStrip-ICON = GenericCtl
 ST-ss-ST-NAME = Strip Status
 
-ND-ssp-NAME = Smart Strip Plug
+ND-SmartStripPlug-NAME = Smart Strip Plug
+ND-SmartStripPlug-ICON = GenericCtl
 ST-ssp-ST-NAME = Plug Status
