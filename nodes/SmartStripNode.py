@@ -31,7 +31,7 @@ class SmartStripNode(polyinterface.Node):
         is_on = False
         # If any are on, then I am on.
         for pnum in range(self.dev.num_children):
-            if self.dev.is_on(index=pnum:
+            if self.dev.is_on(index=pnum):
                 is_on = True
         self.set_st(is_on)
 
