@@ -69,7 +69,7 @@ class SmartStripNode(polyinterface.Node):
     def cmd_set_on(self, command):
         self.set_on()
 
-    def set_off(self, command):
+    def cmd_set_off(self, command):
         self.set_off()
 
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 78}]
