@@ -39,7 +39,7 @@ class Controller(polyinterface.Controller):
             self.nodes[node].reportDrivers()
 
     def heartbeat(self):
-        self.l_debug('heartbeat hb={}'.format(self.hb))
+        self.l_debug('heartbeat','hb={}'.format(self.hb))
         if self.hb == 0:
             self.reportCmd("DON",2)
             self.hb = 1
