@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/jimboca/udi-poly-tp-link-kasa.svg?branch=master)](https://travis-ci.org/jimboca/udi-tp-link-kasa)
+[![Build Status](https://travis-ci.org/jimboca/udi-poly-kasa.svg?branch=master)](https://travis-ci.org/jimboca/udi-kasa)
 
 # harmony-polyglot
 
@@ -12,19 +12,23 @@ This node server is intended to support all devices supported by the [pyHS100 Py
   - HS300
 more will be added as requested, and time allows.  Feel free to Fork this repo and add support as you like and send me a pull request.
 
+This nodeserver relies on a mostly undocumented and officially supported local APO which TP-Link could break at any time.
+
 ## Installation
+
+This nodeserver will only work on a machine running on your local network, it will not work with Polyglot Cloud until TP-Link releases a public API for their cloud interface.
 
 1. Backup Your ISY in case of problems!
    * Really, do the backup, please
 2. Go to the Polyglot Store in the UI and install.
 3. Add NodeServer in Polyglot Web
-4. Open the admin console (close and re-open if you had it open) and you should see a new node 'TP Link Kasa Controller'
+4. Open the admin console (close and re-open if you had it open) and you should see a new node 'Kasa Controller'
 5. The auto-discover should automatically run and find your devices and add them.  Verify by checking the nodeserver log
    * While this is running you can view the nodeserver log in the Polyglot UI to see what it's doing
 8. Once all nodes are added you will need to close and re-open the admin console the new custom profile is loaded.
 
 
-## TP Link Kasa Controller
+## Kasa Controller
 
 This is the main node created by this nodeserver and manages the hubs.
 
@@ -57,7 +61,7 @@ The commands for this node
 
 # Issues
 
-If you have an issue where the nodes are not showing up properly, open the Polyglot UI and go to TPLinkKasa -> Details -> Log, and click 'Download Log Package' and send that to jimboca3@gmail.com as an email attachment, or send it in a PM [Universal Devices Forum](https://forum.universal-devices.com/messenger)
+If you have an issue where the nodes are not showing up properly, open the Polyglot UI and go to Kasa -> Details -> Log, and click 'Download Log Package' and send that to jimboca3@gmail.com as an email attachment, or send it in a PM [Universal Devices Forum](https://forum.universal-devices.com/messenger)
 
 # Upgrading
 

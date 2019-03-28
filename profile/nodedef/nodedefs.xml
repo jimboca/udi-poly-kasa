@@ -1,7 +1,7 @@
 <nodeDefs>
     <!-- NODE DEF from 5.0 document http://wiki.universal-devices.com/index.php?title=V50_MAIN -->
     <!-- controller, this must mach the id in your Controller class-->
-    <nodeDef id="TPLinkKasaController" nls="ctl">
+    <nodeDef id="KasaController" nls="ctl">
         <editors />
         <sts>
 	  <st id="ST" editor="bool" />

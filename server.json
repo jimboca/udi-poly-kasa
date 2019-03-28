@@ -1,8 +1,8 @@
 {
-    "name": "TPLinkKasa",
+    "name": "Kasa",
     "docs": "https://github.com/Einstein42/udi-poly-template-python",
     "type": "python3",
-    "executable": "tp-link-kasa-poly.py",
+    "executable": "kasa-poly.py",
     "install": "install.sh",
     "install_cloud": "install_cloud.sh",
     "description": "TP-Link Kasa Node Server",
@@ -14,9 +14,9 @@
             "title": "TP-Link Kasa: a NodeServer for TP-Link Kasa Integration",
             "author": "JimBoCA",
             "version": "2.0.0",
-            "date": "March 15, 2018",
-            "source": "https://github.com/jimboca/udi-poly-tp-link-kasa",
-            "license": "https://github.com/jimboca/udi-poly-tp-link-kasa/master/LICENSE"
+            "date": "March 27, 2018",
+            "source": "https://github.com/jimboca/udi-poly-kasa",
+            "license": "https://github.com/jimboca/udi-poly-kasa/master/LICENSE"
         }
     ]
 }

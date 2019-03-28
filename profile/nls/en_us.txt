@@ -1,6 +1,6 @@
 # controller
-ND-TPLinkKasaController-NAME = TP Link Kasa Controller
-nD-TPLinkKasaController-ICON = GenericCtl
+ND-KasaController-NAME = TP Link Kasa Controller
+ND-KasaController-ICON = GenericCtl
 CMD-ctl-QUERY"-NAME = Query
 CMD-ctl-DISCOVER-NAME = Discover
 CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
