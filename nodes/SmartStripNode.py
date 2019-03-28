@@ -10,24 +10,45 @@ class SmartStripNode(polyinterface.Node):
         self.dev = dev
         self.name = name
         self.debug_level = 0
+        self.st = None
         self.l_debug('__init__','controller={}'.format(controller))
         # The strip is it's own parent since the plugs are it's children
         super(SmartStripNode, self).__init__(self, address, address, name)
         self.controller = controller
 
     def start(self):
-        self.setDriver('ST', 1)
+        self.check_st()
         for pnum in range(self.dev.num_children):
             naddress = "{}{:02d}".format(self.address,pnum+1)
             nname    = self.dev.get_alias(index=pnum)
             self.l_info('start','adding plug num={} address={} name={}'.format(pnum,naddress,nname))
             self.controller.addNode(SmartStripPlugNode(self.controller, self, naddress, nname, pnum))
 
-    def setOn(self, command):
-        self.setDriver('ST', 100)
+    def shortPoll(self):
+        self.check_st()
 
-    def setOff(self, command):
+    def check_st(self):
+        is_on = False
+        # If any are on, then I am on.
+        for pnum in range(self.dev.num_children):
+            if self.dev.is_on(index=self.index):
+                is_on = True
+        self.set_st(is_on)
+
+    def set_st(self,st):
+        if st != self.st:
+            if st:
+                self.set_on()
+            else:
+                self.set_off()
+
+    def set_on(self):
+        self.setDriver('ST', 100)
+        self.st = True
+
+    def set_off(self):
         self.setDriver('ST', 0)
+        self.st = False
 
     def query(self):
         self.reportDrivers()
@@ -45,9 +66,15 @@ class SmartStripNode(polyinterface.Node):
         if level <= self.debug_level:
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
+    def cmd_set_on(self, command):
+        self.set_on()
+
+    def set_off(self, command):
+        self.set_off()
+
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 78}]
     id = 'SmartStrip'
     commands = {
-        'DON': setOn,
-        'DOF': setOff
+        'DON': cmd_set_on,
+        'DOF': cmd_set_off,
     }

@@ -19,6 +19,9 @@ class SmartStripPlugNode(polyinterface.Node):
         #self.setDriver('ST', 100)
         self.query()
 
+    def shortPoll(self):
+        self.check_st()
+
     def setOn(self, command):
         self.setDriver('ST', 100)
         self.pobj.dev.turn_on(index=self.index)
@@ -27,11 +30,14 @@ class SmartStripPlugNode(polyinterface.Node):
         self.setDriver('ST', 0)
         self.pobj.dev.turn_off(index=self.index)
 
-    def query(self):
+    def check_st(self):
         if self.pobj.dev.is_on(index=self.index):
             self.setDriver('ST', 100)
         else:
             self.setDriver('ST', 0)
+
+    def query(self):
+        self.check_st()
         self.reportDrivers()
 
     def l_info(self, name, string):

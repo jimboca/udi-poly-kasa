@@ -16,23 +16,36 @@ class Controller(polyinterface.Controller):
         self.address = 'tplkasactl'
         self.primary = self.address
         self.debug_level = 0 # TODO: More levels to add pyHS100 debugging (see discover.py)
+        self.hb = 0
 
     def start(self):
         LOGGER.info('Started TP-Link Kasa NodeServer')
         self.setDriver('ST', 1)
+        self.heartbeat()
         self.check_params()
         self.discover()
 
     def shortPoll(self):
-        pass
+        for node in self.nodes:
+            if node != self.address:
+                self.nodes[node].shortPoll()
 
     def longPoll(self):
-        pass
+        self.heartbeat()
 
     def query(self):
         self.check_params()
         for node in self.nodes:
             self.nodes[node].reportDrivers()
+
+    def heartbeat(self):
+        self.l_debug('heartbeat hb={}'.format(self.hb))
+        if self.hb == 0:
+            self.reportCmd("DON",2)
+            self.hb = 1
+        else:
+            self.reportCmd("DOF",2)
+            self.hb = 0
 
     def discover(self):
         self.l_info('discover','start')
