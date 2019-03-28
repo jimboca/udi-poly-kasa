@@ -28,7 +28,7 @@ class SmartStripPlugNode(polyinterface.Node):
         self.pobj.dev.turn_off(index=self.index)
 
     def query(self):
-        if self.pobj.dev.get_is_on(index=self.index):
+        if self.pobj.dev.is_on(index=self.index):
             self.setDriver('ST', 100)
         else:
             self.setDriver('ST', 0)
