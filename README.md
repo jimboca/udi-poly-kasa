@@ -70,6 +70,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.0.2 03/29/2019
+  - Fixed shortPoll to properly update
 - 2.0.1 03/28/2019
   - Update ST on shortPoll, added heartbeat
 - 2.0.0 03/27/2019

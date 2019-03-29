@@ -27,7 +27,8 @@ class Controller(polyinterface.Controller):
 
     def shortPoll(self):
         for node in self.nodes:
-            if node != self.address:
+            self.l_debug('shortPoll', 'node={} node.address={} self.address={}'.format(node,self.nodes[node].address,self.address),level=1)
+            if self.nodes[node].address != self.address:
                 self.nodes[node].shortPoll()
 
     def longPoll(self):
