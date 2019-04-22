@@ -70,6 +70,12 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.0.3 04/21/2019
+  - Fixed controller naming, sorry if you are using this you will need to:
+    - Go to Polyglot Web page
+    - Update the Nodeserver in the Store
+    - Delete the Nodeserver
+    - Add it again
 - 2.0.2 03/29/2019
   - Fixed shortPoll to properly update
 - 2.0.1 03/28/2019

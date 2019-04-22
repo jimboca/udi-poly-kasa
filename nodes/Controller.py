@@ -12,15 +12,16 @@ class Controller(polyinterface.Controller):
 
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
-        self.name = 'TP-Link Kasa Controller'
+        self.name = 'Kasa Controller'
         self.address = 'tplkasactl'
         self.primary = self.address
         self.debug_level = 0 # TODO: More levels to add pyHS100 debugging (see discover.py)
         self.hb = 0
 
     def start(self):
-        LOGGER.info('Started TP-Link Kasa NodeServer')
+        LOGGER.info('Starting {}'.format(self.name))
         self.setDriver('ST', 1)
+        self.update_profile("")
         self.heartbeat()
         self.check_params()
         self.discover()
@@ -90,7 +91,7 @@ class Controller(polyinterface.Controller):
         if level <= self.debug_level:
             LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
 
-    id = 'TPLinkKasaController'
+    id = 'KasaController'
     commands = {
       'QUERY': query,
       'DISCOVER': discover,
