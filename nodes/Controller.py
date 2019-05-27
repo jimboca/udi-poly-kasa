@@ -65,7 +65,7 @@ class Controller(polyinterface.Controller):
                 nname = get_valid_node_name(dev.mac)
                 name = 'TP {}'.format(dev.alias)
                 self.l_info('discover','adding SmartPlug {}'.format(nname))
-                self.addNode(SmartPlugNode(self, self.address,address,name,dev))
+                self.addNode(SmartPlugNode(self, nname,name,dev))
             else:
                 self.l_warning('discover',"Device not yet supported: {}".format(dev))
 

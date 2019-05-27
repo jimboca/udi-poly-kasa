@@ -14,7 +14,7 @@ class SmartPlugNode(polyinterface.Node):
         self.l_debug('__init__','controller={}'.format(controller))
         # The strip is it's own parent since the plugs are it's children
         #super(SmartStripNode, self).__init__(self, address, address, name)
-        super().__init__(controller, primary, address, name)
+        super().__init__(controller, controller.address, address, name)
         self.controller = controller
 
     def start(self):
