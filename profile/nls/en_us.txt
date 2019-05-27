@@ -13,3 +13,8 @@ ST-ss-ST-NAME = Strip Status
 ND-SmartStripPlug-NAME = Smart Strip Plug
 ND-SmartStripPlug-ICON = GenericCtl
 ST-ssp-ST-NAME = Plug Status
+
+# SmartPlug
+ND-SmartPlug-NAME = Smart Plug
+ND-SmartPlug-ICON = GenericCtl
+ST-sp-ST-NAME = Plug Status
