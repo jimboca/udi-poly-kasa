@@ -4,6 +4,7 @@ import logging
 from node_funcs import get_valid_node_name
 from pyHS100 import Discover
 from nodes import SmartStripNode
+from nodes import SmartPlugNode
 
 LOGGER = polyinterface.LOGGER
 logging.getLogger('pyHS100').setLevel(logging.DEBUG)
@@ -65,10 +66,9 @@ class Controller(polyinterface.Controller):
                 name = 'TP {}'.format(dev.alias)
                 self.l_info('discover','adding SmartPlug {}'.format(nname))
                 self.addNode(SmartPlugNode(self, self.address,address,name,dev))
-
-
             else:
                 self.l_warning('discover',"Device not yet supported: {}".format(dev))
+
         LOGGER.info("discover: done")
 
     def delete(self):
