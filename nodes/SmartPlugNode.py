@@ -21,10 +21,13 @@ class SmartPlugNode(polyinterface.Node):
         pass
 
     def shortPoll(self):
-        if (self.dev.state == 'ON'):
-            self.setDriver('ST',100)
-        else:
-            self.setDriver('ST',0)
+        try:
+            if (self.dev.state == 'ON'):
+                self.setDriver('ST',100)
+            else:
+                self.setDriver('ST',0)
+        except:
+            LOGGER.info('Short poll failed')
 
     def set_on(self):
         self.dev.turn_on()
