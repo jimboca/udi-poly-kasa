@@ -35,6 +35,12 @@ class Controller(polyinterface.Controller):
 
     def longPoll(self):
         self.heartbeat()
+        for node in self.nodes:
+            if self.nodes[node].address != self.address:
+                try:
+                    self.nodes[node].longPoll()
+                except:
+                    pass # in case node doesn't have a longPoll method
 
     def query(self):
         self.check_params()
