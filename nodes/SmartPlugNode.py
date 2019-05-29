@@ -33,10 +33,12 @@ class SmartPlugNode(polyinterface.Node):
         try:
             energy = self.dev.get_emeter_realtime()
             if energy is not None:
-                self.setDriver('CC',energy['current'])
-                self.setDriver('CV',energy['voltage'])
-                self.setDriver('CPW',energy['power'])
-                self.setDriver('TPW',energy['total'])
+                # rounding the values reduces driver updating traffic for
+                # insignificant changes
+                self.setDriver('CC',round(energy['current'],3))
+                self.setDriver('CV',round(energy['voltage'],1))
+                self.setDriver('CPW',round(energy['power'],1))
+                self.setDriver('TPW',round(energy['total'],3))
         except:
             LOGGER.info('Long poll failed')
 
