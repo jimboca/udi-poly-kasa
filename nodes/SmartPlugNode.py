@@ -29,6 +29,17 @@ class SmartPlugNode(polyinterface.Node):
         except:
             LOGGER.info('Short poll failed')
 
+    def longPoll(self):
+        try:
+            energy = self.dev.get_emeter_realtime()
+            if energy is not None:
+                self.setDriver('CC',energy['current'])
+                self.setDriver('CV',energy['voltage'])
+                self.setDriver('CPW',energy['power'])
+                self.setDriver('TPW',energy['total'])
+        except:
+            LOGGER.info('Long poll failed')
+
     def set_on(self):
         self.dev.turn_on()
         self.setDriver('ST', 100)
@@ -61,7 +72,13 @@ class SmartPlugNode(polyinterface.Node):
     def cmd_set_off(self, command):
         self.set_off()
 
-    drivers = [{'driver': 'ST', 'value': 0, 'uom': 78}]
+    drivers = [{'driver': 'ST', 'value': 0, 'uom': 78},
+                {'driver': 'CC', 'value': 0, 'uom': 1}, #amps
+                {'driver': 'CV', 'value': 0, 'uom': 72}, #volts
+                {'driver': 'CPW', 'value': 0, 'uom': 73}, #watts
+                {'driver': 'TPW', 'value': 0, 'uom': 33}, #kWH
+                {'driver': 'GV0', 'value': 0, 'uom': 2} #connection state
+                ]
     id = 'SmartPlug'
     commands = {
         'DON': cmd_set_on,
