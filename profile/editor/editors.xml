@@ -10,7 +10,11 @@
     </editor>
     
     <editor id="raw">
-        <range uom="56" subset="0-1000" />
+        <range uom="56" subset="0-1600" />
+    </editor>
+    
+    <editor id="watts">
+        <range uom="73" subset="0-1600" prec="1"/>
     </editor>
 
 </editors>
