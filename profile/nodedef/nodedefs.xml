@@ -51,10 +51,10 @@
         <editors />
         <sts>
             <st id="ST" editor="onoff" />
-            <st id="CC" editor="onoff" />
-            <st id="CV" editor="onoff" />
-            <st id="CPW" editor="onoff" />
-            <st id="TPW" editor="onoff" />
+            <st id="CC" editor="raw" />
+            <st id="CV" editor="raw" />
+            <st id="CPW" editor="raw" />
+            <st id="TPW" editor="raw" />
         </sts>
         <cmds>
             <sends />
