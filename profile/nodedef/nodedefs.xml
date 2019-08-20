@@ -46,5 +46,23 @@
             </accepts>
         </cmds>
     </nodeDef>
+	
+    <nodeDef id="SmartPlug" nls="sp">
+        <editors />
+        <sts>
+            <st id="ST" editor="onoff" />
+            <st id="CC" editor="raw" />
+            <st id="CV" editor="raw" />
+            <st id="CPW" editor="watts" />
+            <st id="TPW" editor="raw" />
+        </sts>
+        <cmds>
+            <sends />
+            <accepts>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+            </accepts>
+        </cmds>
+    </nodeDef>
 
 </nodeDefs>

@@ -4,6 +4,7 @@ import logging
 from node_funcs import get_valid_node_name
 from pyHS100 import Discover
 from nodes import SmartStripNode
+from nodes import SmartPlugNode
 
 LOGGER = polyinterface.LOGGER
 logging.getLogger('pyHS100').setLevel(logging.DEBUG)
@@ -34,6 +35,12 @@ class Controller(polyinterface.Controller):
 
     def longPoll(self):
         self.heartbeat()
+        for node in self.nodes:
+            if self.nodes[node].address != self.address:
+                try:
+                    self.nodes[node].longPoll()
+                except:
+                    pass # in case node doesn't have a longPoll method
 
     def query(self):
         self.check_params()
@@ -60,8 +67,14 @@ class Controller(polyinterface.Controller):
                 nname = get_valid_node_name(dev.mac)
                 self.l_info('discover','adding SmartStrip {}'.format(nname))
                 self.addNode(SmartStripNode(self, nname, 'SmartStrip {}'.format(dev.mac), dev))
+            elif cname == 'SmartPlug':
+                nname = get_valid_node_name(dev.mac)
+                name = 'TP {}'.format(dev.alias)
+                self.l_info('discover','adding SmartPlug {}'.format(nname))
+                self.addNode(SmartPlugNode(self, nname,name,dev))
             else:
                 self.l_warning('discover',"Device not yet supported: {}".format(dev))
+
         LOGGER.info("discover: done")
 
     def delete(self):
