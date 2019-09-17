@@ -17,8 +17,15 @@ ST-ssp-ST-NAME = Plug Status
 # SmartPlug
 ND-SmartPlug-NAME = Smart Plug
 ND-SmartPlug-ICON = GenericCtl
+ND-SmartPlugE-NAME = Smart Plug Emeter
+ND-SmartPlugE-ICON = GenericCtl
 ST-sp-ST-NAME = Plug Status
 ST-sp-CC-NAME = Current
 ST-sp-CV-NAME = Voltage
 ST-sp-CPW-NAME = Power
 ST-sp-TPW-NAME = Total Energy
+
+# SmartBulb
+ND-SmartBulb-NAME = Smart Bulb
+ND-SmartBulb-ICON = GenericCtl
+ST-sp-ST-NAME = Bulb Status

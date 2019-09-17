@@ -33,7 +33,7 @@
         </cmds>
     </nodeDef>
 
-    <nodeDef id="SmartStripPlug" nls="ssp">
+    <nodeDef id="SmartStripBulb" nls="ssp">
         <editors />
         <sts>
             <st id="ST" editor="onoff" />
@@ -46,15 +46,11 @@
             </accepts>
         </cmds>
     </nodeDef>
-	
+
     <nodeDef id="SmartPlug" nls="sp">
         <editors />
         <sts>
             <st id="ST" editor="onoff" />
-            <st id="CC" editor="raw" />
-            <st id="CV" editor="raw" />
-            <st id="CPW" editor="watts" />
-            <st id="TPW" editor="raw" />
         </sts>
         <cmds>
             <sends />
@@ -64,5 +60,38 @@
             </accepts>
         </cmds>
     </nodeDef>
+
+    <nodeDef id="SmartPlugE" nls="spe">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="CC" editor="raw" />
+          <st id="CV" editor="raw" />
+          <st id="CPW" editor="watts" />
+          <st id="TPW" editor="raw" />
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+              <cmd id="DON" />
+              <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
+  <nodeDef id="SmartBulb" nls="sb">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+              <cmd id="DON" />
+              <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
 
 </nodeDefs>

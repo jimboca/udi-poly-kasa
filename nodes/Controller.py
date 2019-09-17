@@ -5,6 +5,7 @@ from node_funcs import get_valid_node_name
 from pyHS100 import Discover
 from nodes import SmartStripNode
 from nodes import SmartPlugNode
+from nodes import SmartBulbNode
 
 LOGGER = polyinterface.LOGGER
 logging.getLogger('pyHS100').setLevel(logging.DEBUG)
@@ -22,7 +23,7 @@ class Controller(polyinterface.Controller):
     def start(self):
         LOGGER.info('Starting {}'.format(self.name))
         self.setDriver('ST', 1)
-        self.update_profile("")
+        self.check_profile()
         self.heartbeat()
         self.check_params()
         self.discover()
@@ -45,7 +46,7 @@ class Controller(polyinterface.Controller):
     def query(self):
         self.check_params()
         for node in self.nodes:
-            self.nodes[node].reportDrivers()
+            self.nodes[node].query()
 
     def heartbeat(self):
         self.l_debug('heartbeat','hb={}'.format(self.hb))
@@ -71,9 +72,14 @@ class Controller(polyinterface.Controller):
                 nname = get_valid_node_name(dev.mac)
                 name = 'TP {}'.format(dev.alias)
                 self.l_info('discover','adding SmartPlug {}'.format(nname))
-                self.addNode(SmartPlugNode(self, nname,name,dev))
+                self.addNode(SmartPlugNode(self, nname, name, dev))
+            elif cname == 'SmartBulb':
+                nname = get_valid_node_name(dev.mac)
+                name = 'TP {}'.format(dev.alias)
+                self.l_info('discover','adding SmartBulb {}'.format(nname))
+                self.addNode(SmartBulbNode(self, nname, name, dev))
             else:
-                self.l_warning('discover',"Device not yet supported: {}".format(dev))
+                self.l_error('discover',"Device not yet supported: {}".format(dev))
 
         LOGGER.info("discover: done")
 
@@ -86,10 +92,21 @@ class Controller(polyinterface.Controller):
     def check_params(self):
         pass
 
-    def update_profile(self,command):
-        LOGGER.info('update_profile:')
+    # TODO: Check if it needs to be update
+    def check_profile(self):
+        self.l_info('check_profile','start')
+        self.update_profile()
+
+    def update_profile(self):
+        self.l_info('update_profile','start')
         st = self.poly.installprofile()
         return st
+
+    def _cmd_update_profile(self,command):
+        self.update_profile()
+
+    def _cmd_discover(self,cmd):
+        self.discover()
 
     def l_info(self, name, string):
         LOGGER.info("%s:%s:%s: %s" %  (self.id,self.name,name,string))
@@ -107,8 +124,8 @@ class Controller(polyinterface.Controller):
     id = 'KasaController'
     commands = {
       'QUERY': query,
-      'DISCOVER': discover,
-      'UPDATE_PROFILE': update_profile,
+      'DISCOVER': _cmd_discover,
+      'UPDATE_PROFILE': _cmd_update_profile,
     }
     drivers = [
     {

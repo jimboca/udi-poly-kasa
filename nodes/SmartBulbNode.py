@@ -1,14 +1,13 @@
 #
-# TP Link Kasa Smart Plug Node
+# TP Link Kasa Smart Bulb Node
 #
-# This code is used for plug with no energy HS100
-# and those with energy HS110
+# This code is used for bulbs
 #
 import polyinterface
 
 LOGGER = polyinterface.LOGGER
 
-class SmartPlugNode(polyinterface.Node):
+class SmartBulbNode(polyinterface.Node):
 
     def __init__(self, controller, address, name, dev):
         self.dev = dev
@@ -16,13 +15,6 @@ class SmartPlugNode(polyinterface.Node):
         self.debug_level = 0
         self.st = None
         self.l_debug('__init__','controller={} address={} name={} dev={}'.format(controller,address,name,dev))
-        if self.dev.has_emeter:
-            self.l_debug('__init__','Has emeter')
-        else:
-            self.l_debug('__init__','No emeter')
-            self.id = 'SmartPlug'
-        # The strip is it's own parent since the plugs are it's children
-        #super(SmartStripNode, self).__init__(self, address, address, name)
         super().__init__(controller, controller.address, address, name)
         self.controller = controller
 
@@ -101,7 +93,7 @@ class SmartPlugNode(polyinterface.Node):
         {'driver': 'TPW', 'value': 0, 'uom': 33}, #kWH
         {'driver': 'GV0', 'value': 0, 'uom': 2} #connection state
     ]
-    id = 'SmartPlugE'
+    id = 'SmartBulb'
     commands = {
         'DON': cmd_set_on,
         'DOF': cmd_set_off,
