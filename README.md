@@ -70,6 +70,10 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.1.0 TBD
+  - Merge changes from @eagleco to support plugs
+  - Fixed to work for those with emeter (HS110) and those without (HS100)
+  - Adding support for SmartBulb dimmable and RGBW
 - 2.0.3 04/21/2019
   - Fixed controller naming, sorry if you are using this you will need to:
     - Go to Polyglot Web page
