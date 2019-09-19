@@ -1,12 +1,11 @@
 
 import polyinterface
-import logging
+import logging,re,json,sys
 from node_funcs import get_valid_node_name
 from pyHS100 import Discover
 from nodes import SmartStripNode
 from nodes import SmartPlugNode
 from nodes import SmartBulbNode
-
 LOGGER = polyinterface.LOGGER
 logging.getLogger('pyHS100').setLevel(logging.DEBUG)
 
@@ -19,6 +18,7 @@ class Controller(polyinterface.Controller):
         self.primary = self.address
         self.debug_level = 0 # TODO: More levels to add pyHS100 debugging (see discover.py)
         self.hb = 0
+        self.nodes_by_mac = {}
 
     def start(self):
         LOGGER.info('Starting {}'.format(self.name))
@@ -36,17 +36,25 @@ class Controller(polyinterface.Controller):
 
     def longPoll(self):
         self.heartbeat()
+        all_connected = True
         for node in self.nodes:
             if self.nodes[node].address != self.address:
                 try:
-                    self.nodes[node].longPoll()
+                    if self.nodes[node].is_connected():
+                        self.nodes[node].longPoll()
+                    else:
+                        all_connected = False
                 except:
                     pass # in case node doesn't have a longPoll method
+        if not all_connected:
+            self.l_info("longPoll", "Not all devices are connected, so running discover to check for them")
+            self.discover_new()
 
     def query(self):
         self.check_params()
         for node in self.nodes:
-            self.nodes[node].query()
+            if self.nodes[node].address != self.address:
+                self.nodes[node].query()
 
     def heartbeat(self):
         self.l_debug('heartbeat','hb={}'.format(self.hb))
@@ -59,29 +67,91 @@ class Controller(polyinterface.Controller):
 
     def discover(self):
         self.l_info('discover','start')
+        devm = {}
         for dev in Discover.discover().values():
             self.l_debug('discover',"Got Device\n\tAlias:{}\n\tModel:{}\n\tMac:{}\n\tHost:{}".
                     format(dev.alias,dev.model,dev.mac,dev.host))
             cname = dev.__class__.__name__
             self.l_debug('discover','cname={}'.format(cname))
-            if cname == 'SmartStrip':
-                nname = get_valid_node_name(dev.mac)
-                self.l_info('discover','adding SmartStrip {}'.format(nname))
-                self.addNode(SmartStripNode(self, nname, 'SmartStrip {}'.format(dev.mac), dev))
-            elif cname == 'SmartPlug':
-                nname = get_valid_node_name(dev.mac)
-                name = 'TP {}'.format(dev.alias)
-                self.l_info('discover','adding SmartPlug {}'.format(nname))
-                self.addNode(SmartPlugNode(self, nname, name, dev))
-            elif cname == 'SmartBulb':
-                nname = get_valid_node_name(dev.mac)
-                name = 'TP {}'.format(dev.alias)
-                self.l_info('discover','adding SmartBulb {}'.format(nname))
-                self.addNode(SmartBulbNode(self, nname, name, dev))
-            else:
-                self.l_error('discover',"Device not yet supported: {}".format(dev))
-
+            if self.add_node(cname,dev.mac,dev.host,dev.model,dev.alias):
+                devm[self.smac(dev.mac)] = True
+        # make sure all we know about are added in case they didn't respond this time.
+        for mac in self.polyConfig['customParams']:
+            if not self.smac(mac) in devm:
+                cfg = self.get_device_cfg(mac)
+                self.l_info('discover', "Adding previously known device: {}".format(cfg))
+                self.add_node(cfg['cname'],mac,cfg['host'],cfg['model'],cfg['alias'])
         LOGGER.info("discover: done")
+
+    def discover_new(self):
+        self.l_info('discover_new','start')
+        for dev in Discover.discover().values():
+            self.l_debug('discover_new',"Got Device\n\tAlias:{}\n\tModel:{}\n\tMac:{}\n\tHost:{}".
+                    format(dev.alias,dev.model,dev.mac,dev.host))
+            # Known Device?
+            smac = self.smac(dev.mac)
+            if smac in self.nodes_by_mac:
+                # Make sure the host matches
+                node = self.nodes_by_mac[smac]
+                if dev.host != node.host:
+                    self.l_warning('discover_new',"Updating '{}' host from {} to {}".format(node.name,node.host,dev.host))
+                    node.host = dev.host
+                    node.connect()
+                elif not node.is_connected():
+                    # Try again
+                    node.connect()
+                else:
+                    self.l_info('discover_new', "'{}' host is {} same as {}".format(node.name,node.host,dev.host))
+            else:
+                self.l_info('discover_new','found new device {}'.format(dev.alias))
+                cname = dev.__class__.__name__
+                self.add_node(cname,dev.mac,dev.host,dev.model,dev.alias)
+        self.l_info("discover_new","done")
+
+    def add_node(self,cname,mac,host,model,alias):
+        nname = get_valid_node_name(mac)
+        if cname == 'SmartStrip':
+            self.l_info('discover','adding SmartStrip {}'.format(nname))
+            node = self.addNode(SmartStripNode(self, nname, 'SmartStrip {}'.format(mac), host))
+        elif cname == 'SmartPlug':
+            name = 'TP {}'.format(alias)
+            self.l_info('discover','adding SmartPlug {}'.format(nname))
+            node = self.addNode(SmartPlugNode(self, nname, name, model, host))
+        elif cname == 'SmartBulb':
+            name = 'TP {}'.format(alias)
+            self.l_info('discover','adding SmartBulb {}'.format(nname))
+            node = self.addNode(SmartBulbNode(self, nname, name, model, host))
+        else:
+            self.l_error('discover',"Device not yet supported: {}".format(dev))
+            return False
+        # We always add it to update the host if necessary
+        self.nodes_by_mac[self.smac(mac)] = node
+        self.add_device_param(mac, cname=cname, host=host, alias=alias)
+        return True
+
+    def smac(self,mac):
+        return re.sub(r'[:]+', '', mac)
+
+    def exist_device_param(self,mac):
+        cparams = self.polyConfig['customParams']
+        return True if self.smac(mac) in cparams else False
+
+    def add_device_param(self,mac,cname=None,host=None,alias=None):
+        cparams = self.polyConfig['customParams']
+        smac = self.smac(mac)
+        # Always add it so we have the latest
+        cparams[smac] = '{{ "cname": "{0}", "host": "{1}", "alias": "{2}" }}'.format(cname,host,alias)
+        self.addCustomParam(cparams)
+
+    def get_device_cfg(self,mac):
+        cfg = self.polyConfig['customParams'][self.smac(mac)]
+        try:
+            cfgd = json.loads(cfg)
+        except:
+            err = sys.exc_info()[0]
+            self.l_error('get_device_cfg','failed to parse cfg={0} Error: {1}'.format(cfg,err))
+            return None
+        return cfgd
 
     def delete(self):
         LOGGER.info('Oh God I\'m being deleted. Nooooooooooooooooooooooooooooooooooooooooo.')
@@ -106,7 +176,7 @@ class Controller(polyinterface.Controller):
         self.update_profile()
 
     def _cmd_discover(self,cmd):
-        self.discover()
+        self.discover_new()
 
     def l_info(self, name, string):
         LOGGER.info("%s:%s:%s: %s" %  (self.id,self.name,name,string))

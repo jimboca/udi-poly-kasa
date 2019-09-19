@@ -1,59 +1,39 @@
 #
-# TP Link Kasa Smart Plug Node
+# TP Link Kasa Smart Bulb Node
 #
-# This code is used for plug with no energy HS100
-# and those with energy HS110
+# This code is used for bulbs
 #
 import polyinterface
+from pyHS100 import SmartPlug
+from nodes import SmartDeviceNode
 
 LOGGER = polyinterface.LOGGER
 
-class SmartPlugNode(polyinterface.Node):
+class SmartPlugNode(SmartDeviceNode):
 
-    def __init__(self, controller, address, name, dev):
-        self.dev = dev
-        self.name = name
-        self.debug_level = 0
-        self.st = None
-        self.l_debug('__init__','controller={} address={} name={} dev={}'.format(controller,address,name,dev))
+    def __init__(self, controller, address, name, model, host):
+        drivers = [
+            {'driver': 'ST', 'value': 0, 'uom': 78},
+            {'driver': 'CC', 'value': 0, 'uom': 1}, #amps
+            {'driver': 'CV', 'value': 0, 'uom': 72}, #volts
+            {'driver': 'CPW', 'value': 0, 'uom': 73}, #watts
+            {'driver': 'TPW', 'value': 0, 'uom': 33}, #kWH
+            {'driver': 'GV0', 'value': 0, 'uom': 2} #connection state
+        ]
+        self.dev = SmartPlug(host)
+        super().__init__(controller, controller.address, address, name, model, host)
         if self.dev.has_emeter:
             self.l_debug('__init__','Has emeter')
         else:
             self.l_debug('__init__','No emeter')
-            self.id = 'SmartPlug'
-        # The strip is it's own parent since the plugs are it's children
-        #super(SmartStripNode, self).__init__(self, address, address, name)
-        super().__init__(controller, controller.address, address, name)
-        self.controller = controller
 
     def start(self):
-        self.set_state()
+        super().start()
         self.set_energy()
-
-    def shortPoll(self):
-        self.set_state()
 
     def longPoll(self):
+        super().longPoll()
         self.set_energy()
-
-    def set_on(self):
-        self.dev.turn_on()
-        self.setDriver('ST', 100)
-        self.st = True
-
-    def set_off(self):
-        self.dev.turn_off()
-        self.setDriver('ST', 0)
-        self.st = False
-
-    def set_state(self):
-        try:
-            if (self.dev.state == 'ON'):
-                self.setDriver('ST',100)
-            else:
-                self.setDriver('ST',0)
-        except:
-            self.l_error('set_state','failed', exc_info=True)
 
     def set_energy(self):
         if self.dev.has_emeter:
@@ -74,34 +54,15 @@ class SmartPlugNode(polyinterface.Node):
         self.set_energy()
         self.reportDrivers()
 
-    def l_info(self, name, string):
-        LOGGER.info("%s:%s:%s: %s" %  (self.id,self.name,name,string))
+    def newdev(self):
+        return SmartPlug(self.host)
 
-    def l_error(self, name, string, exc_info=False):
-        LOGGER.error("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
+    def cmd_set_on(self,command):
+        super().cmd_set_on(command)
 
-    def l_warning(self, name, string):
-        LOGGER.warning("%s:%s:%s: %s" % (self.id,self.name,name,string))
+    def cmd_set_off(self,command):
+        super().cmd_set_off(command)
 
-    def l_debug(self, name, string, level=0, exc_info=False):
-        if level <= self.debug_level:
-            LOGGER.debug("%s:%s:%s: %s" % (self.id,self.name,name,string), exc_info=exc_info)
-
-    def cmd_set_on(self, command):
-        self.set_on()
-
-    def cmd_set_off(self, command):
-        self.set_off()
-
-    drivers = [
-        {'driver': 'ST', 'value': 0, 'uom': 78},
-        {'driver': 'CC', 'value': 0, 'uom': 1}, #amps
-        {'driver': 'CV', 'value': 0, 'uom': 72}, #volts
-        {'driver': 'CPW', 'value': 0, 'uom': 73}, #watts
-        {'driver': 'TPW', 'value': 0, 'uom': 33}, #kWH
-        {'driver': 'GV0', 'value': 0, 'uom': 2} #connection state
-    ]
-    id = 'SmartPlugE'
     commands = {
         'DON': cmd_set_on,
         'DOF': cmd_set_off,

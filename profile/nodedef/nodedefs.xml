@@ -33,7 +33,7 @@
         </cmds>
     </nodeDef>
 
-    <nodeDef id="SmartStripBulb" nls="ssp">
+    <nodeDef id="SmartStripPlug" nls="ssp">
         <editors />
         <sts>
             <st id="ST" editor="onoff" />
@@ -47,7 +47,7 @@
         </cmds>
     </nodeDef>
 
-    <nodeDef id="SmartPlug" nls="sp">
+    <nodeDef id="HS100US" nls="sp">
         <editors />
         <sts>
             <st id="ST" editor="onoff" />
@@ -61,7 +61,7 @@
         </cmds>
     </nodeDef>
 
-    <nodeDef id="SmartPlugE" nls="spe">
+    <nodeDef id="HS110US" nls="spe">
       <editors />
       <sts>
           <st id="ST" editor="onoff" />
@@ -79,7 +79,7 @@
       </cmds>
   </nodeDef>
 
-  <nodeDef id="SmartBulb" nls="sb">
+  <nodeDef id="KL130US" nls="sb">
       <editors />
       <sts>
           <st id="ST" editor="onoff" />

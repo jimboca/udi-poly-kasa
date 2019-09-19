@@ -15,17 +15,22 @@ ND-SmartStripPlug-ICON = GenericCtl
 ST-ssp-ST-NAME = Plug Status
 
 # SmartPlug
-ND-SmartPlug-NAME = Smart Plug
-ND-SmartPlug-ICON = GenericCtl
-ND-SmartPlugE-NAME = Smart Plug Emeter
-ND-SmartPlugE-ICON = GenericCtl
+ND-HS100US-NAME = HS100
+ND-HS100US-ICON = GenericCtl
+ND-HS110US-NAME = HS110US
+ND-HS110US-ICON = GenericCtl
 ST-sp-ST-NAME = Plug Status
-ST-sp-CC-NAME = Current
-ST-sp-CV-NAME = Voltage
-ST-sp-CPW-NAME = Power
-ST-sp-TPW-NAME = Total Energy
+ST-spe-ST-NAME = Plug Status
+
+ST-spe-CC-NAME = Current
+ST-spe-CV-NAME = Voltage
+ST-spe-CPW-NAME = Power
+ST-spe-TPW-NAME = Total Energy
+
+ST-sp-GV0-NAME = Connected
+ST-spe-GV0-NAME = Connected
 
 # SmartBulb
-ND-SmartBulb-NAME = Smart Bulb
-ND-SmartBulb-ICON = GenericCtl
-ST-sp-ST-NAME = Bulb Status
+ND-KL130US-NAME = Smart Bulb
+ND-KL130US-ICON = Lamp
+ST-sb-ST-NAME = Bulb Status
