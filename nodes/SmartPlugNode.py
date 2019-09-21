@@ -11,21 +11,32 @@ LOGGER = polyinterface.LOGGER
 
 class SmartPlugNode(SmartDeviceNode):
 
-    def __init__(self, controller, address, name, model, host):
-        drivers = [
+    def __init__(self, controller, address, name, cfg=None, dev=None):
+        # All plugs have these.
+        self.debug_level = 0
+        self.name = name
+        self.default = 'UnknownPlugModel'
+        # All devices have these.
+        dv = [
             {'driver': 'ST', 'value': 0, 'uom': 78},
-            {'driver': 'CC', 'value': 0, 'uom': 1}, #amps
-            {'driver': 'CV', 'value': 0, 'uom': 72}, #volts
-            {'driver': 'CPW', 'value': 0, 'uom': 73}, #watts
-            {'driver': 'TPW', 'value': 0, 'uom': 33}, #kWH
             {'driver': 'GV0', 'value': 0, 'uom': 2} #connection state
         ]
-        self.dev = SmartPlug(host)
-        super().__init__(controller, controller.address, address, name, model, host)
-        if self.dev.has_emeter:
+        if dev is not None:
+            cfg['emeter'] = dev.has_emeter
+            self.emeter = cfg['emeter']
+        else:
+            self.emeter = cfg['emeter']
+            self.host   = cfg['host']
+        if self.emeter:
             self.l_debug('__init__','Has emeter')
+            dv.append({'driver': 'CC', 'value': 0, 'uom': 1}) #amps
+            dv.append({'driver': 'CV', 'value': 0, 'uom': 72}) #volts
+            dv.append({'driver': 'CPW', 'value': 0, 'uom': 73}) #watts
+            dv.append({'driver': 'TPW', 'value': 0, 'uom': 33}) #kWH
         else:
             self.l_debug('__init__','No emeter')
+        self.drivers = dv
+        super().__init__(controller, controller.address, address, name, dev, cfg)
 
     def start(self):
         super().start()
@@ -36,7 +47,7 @@ class SmartPlugNode(SmartDeviceNode):
         self.set_energy()
 
     def set_energy(self):
-        if self.dev.has_emeter:
+        if self.cfg['emeter']:
             try:
                 energy = self.dev.get_emeter_realtime()
                 if energy is not None:
@@ -50,7 +61,7 @@ class SmartPlugNode(SmartDeviceNode):
                 self.l_error('set_energy','failed', exc_info=True)
 
     def query(self):
-        self.set_state()
+        super().query()
         self.set_energy()
         self.reportDrivers()
 

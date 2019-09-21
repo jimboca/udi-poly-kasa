@@ -71,16 +71,16 @@ class Controller(polyinterface.Controller):
         for dev in Discover.discover().values():
             self.l_debug('discover',"Got Device\n\tAlias:{}\n\tModel:{}\n\tMac:{}\n\tHost:{}".
                     format(dev.alias,dev.model,dev.mac,dev.host))
-            cname = dev.__class__.__name__
-            self.l_debug('discover','cname={}'.format(cname))
-            if self.add_node(cname,dev.mac,dev.host,dev.model,dev.alias):
+            #if self.add_node(cname,dev.mac,dev.host,dev.model,dev.alias):
+            if self.add_node(dev=dev):
                 devm[self.smac(dev.mac)] = True
         # make sure all we know about are added in case they didn't respond this time.
         for mac in self.polyConfig['customParams']:
             if not self.smac(mac) in devm:
                 cfg = self.get_device_cfg(mac)
-                self.l_info('discover', "Adding previously known device: {}".format(cfg))
-                self.add_node(cfg['cname'],mac,cfg['host'],cfg['model'],cfg['alias'])
+                if cfg is not None:
+                    self.l_info('discover', "Adding previously known device that didn't respond to discover: {}".format(cfg))
+                    self.add_node(cfg=cfg)
         LOGGER.info("discover: done")
 
     def discover_new(self):
@@ -104,29 +104,44 @@ class Controller(polyinterface.Controller):
                     self.l_info('discover_new', "'{}' host is {} same as {}".format(node.name,node.host,dev.host))
             else:
                 self.l_info('discover_new','found new device {}'.format(dev.alias))
-                cname = dev.__class__.__name__
-                self.add_node(cname,dev.mac,dev.host,dev.model,dev.alias)
+                self.add_node(dev=dev)
         self.l_info("discover_new","done")
 
-    def add_node(self,cname,mac,host,model,alias):
-        nname = get_valid_node_name(mac)
-        if cname == 'SmartStrip':
-            self.l_info('discover','adding SmartStrip {}'.format(nname))
-            node = self.addNode(SmartStripNode(self, nname, 'SmartStrip {}'.format(mac), host))
-        elif cname == 'SmartPlug':
-            name = 'TP {}'.format(alias)
-            self.l_info('discover','adding SmartPlug {}'.format(nname))
-            node = self.addNode(SmartPlugNode(self, nname, name, model, host))
-        elif cname == 'SmartBulb':
-            name = 'TP {}'.format(alias)
-            self.l_info('discover','adding SmartBulb {}'.format(nname))
-            node = self.addNode(SmartBulbNode(self, nname, name, model, host))
+    #def add_node(self,cname,mac,host,model,alias):
+    # Add a node based on dev returned from discover or the stored config.
+    def add_node(self, dev=None, cfg=None):
+        if dev is not None:
+            type = dev.__class__.__name__
+            mac  = dev.mac
+            name = dev.alias
+            cfg  = { "type": type, "name": name, "host": dev.host, "mac": mac, "model": dev.model}
+        elif cfg is not None:
+            type = cfg['type']
+            mac  = cfg['mac']
+            name = cfg['name']
+        else:
+            self.l_error("add_node","INTERNAL ERROR: dev={} and cfg={}".format(dev,cfg))
+            return False
+        address = get_valid_node_name(mac)
+        self.l_info('discover',"adding {} '{}' {}".format(type,name,address))
+        if type == 'SmartStrip':
+            # Smartstrip doesn't have a name, so use the MAC
+            name = 'SmartStrip {}'.format(mac)
+            cfg['name'] = name
+            self.l_info('discover','adding SmartStrip {}'.format(name))
+            node = self.addNode(SmartStripNode(self, address, name,  dev=dev, cfg=cfg))
+        elif type == 'SmartPlug':
+            node = self.addNode(SmartPlugNode(self, address, name, dev=dev, cfg=cfg))
+        elif type == 'SmartBulb':
+            node = self.addNode(SmartBulbNode(self, address, name, dev=dev, cfg=cfg))
         else:
             self.l_error('discover',"Device not yet supported: {}".format(dev))
             return False
         # We always add it to update the host if necessary
         self.nodes_by_mac[self.smac(mac)] = node
-        self.add_device_param(mac, cname=cname, host=host, alias=alias)
+        if dev is not None:
+            # Device was passed in, so save the cfg we have so far
+            self.save_cfg(cfg)
         return True
 
     def smac(self,mac):
@@ -136,11 +151,11 @@ class Controller(polyinterface.Controller):
         cparams = self.polyConfig['customParams']
         return True if self.smac(mac) in cparams else False
 
-    def add_device_param(self,mac,cname=None,host=None,alias=None):
+    def save_cfg(self,cfg):
+        js = json.dumps(cfg)
+        self.l_debug('save_cfg','Saving config: {}'.format(js))
         cparams = self.polyConfig['customParams']
-        smac = self.smac(mac)
-        # Always add it so we have the latest
-        cparams[smac] = '{{ "cname": "{0}", "host": "{1}", "alias": "{2}" }}'.format(cname,host,alias)
+        cparams[self.smac(cfg['mac'])] = js
         self.addCustomParam(cparams)
 
     def get_device_cfg(self,mac):

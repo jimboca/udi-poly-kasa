@@ -5,23 +5,48 @@
 #
 import re
 import polyinterface
+from pyHS100 import SmartDeviceException
 
 LOGGER = polyinterface.LOGGER
 
+_known_devices = {
+    'HS100US': True,
+    'HS110US': True,
+    'HS300US': True,
+    'KL130US': True,
+    'KL110US': True,
+}
+
 class SmartDeviceNode(polyinterface.Node):
 
-    def __init__(self, controller, parent_address, address, name, model, host):
+    def __init__(self, controller, parent_address, address, name, dev, cfg):
         self.controller = controller
         self.name = name
-        self.host = host
+        self.dev  = dev
+        self.cfg  = cfg
+        self.l_debug('__init__','dev={}'.format(dev))
+        self.l_debug('__init__','cfg={}'.format(cfg))
+        if dev is not None:
+            self.host = dev.host
+        else:
+            self.host = cfg['host']
         self.debug_level = 0
         self.st = None
-        self.id = re.sub(r'[\(\)]+', '', model)
-
-        self.l_debug('__init__','controller={} address={} name={} host={}'.format(controller,address,name,host))
+        self.connected = None # So start will force setting proper status
+        sid =  re.sub(r'[\(\)]+', '', cfg['model'])
+        if sid in _known_devices:
+            self.id = sid
+        else:
+            self.id = self.default
+            self.l_error('__init__',"Device '{}' is an uknown model {}, using {}".format(name,sid,self.id))
+        self.l_debug('__init__','controller={} address={} name={} host={}'.format(controller,address,name,self.host))
         super().__init__(controller, parent_address, address, name)
 
     def start(self):
+        if self.dev is not None:
+            self.set_connected(True)
+        else:
+            self.set_connected(False)
         self.connect()
         self.set_state()
 
@@ -34,14 +59,20 @@ class SmartDeviceNode(polyinterface.Node):
             self.connect()
 
     def connect(self):
-        self.l_debug('connect', '', level=0, exc_info=False)
-        try:
-            self.dev = self.newdev()
-            self.l_info('connect', 'connected: {}'.format(self.dev))
-            self.set_connected(True)
-        except:
-            self.l_error("start", "Unable to connect to device '{}' {} will try again later".format(self.name,self.host), exc_info=True)
-            self.set_connected(False)
+        self.l_debug('connect', 'connected={}'.format(self.is_connected()), level=0, exc_info=False)
+        if not self.is_connected():
+            try:
+                self.dev = self.newdev()
+                # We can get a dev, but not really connected, so make sure we are connected.
+                sys_info = self.dev.sys_info
+                self.set_connected(True)
+            except SmartDeviceException as ex:
+                if self.connected:
+                    self.l_error("start", "Unable to connect to device '{}' {} will try again later".format(self.name,self.host), exc_info=False)
+                self.set_connected(False)
+            except:
+                self.l_error("start", "Unknown excption connecting to device '{}' {} will try again later".format(self.name,self.host), exc_info=True)
+                self.set_connected(False)
         return self.connected
 
     def set_on(self):
@@ -53,21 +84,45 @@ class SmartDeviceNode(polyinterface.Node):
         self.set_state()
 
     def set_state(self):
-        if self.connected:
+        # We don't use self.connected here because dev might be good, but device is unplugged
+        # So then when it's plugged back in the same dev will still work
+        if self.dev is not None:
             try:
                 if (self.dev.state == 'ON'):
                     self.setDriver('ST',100)
                 else:
                     self.setDriver('ST',0)
+                if not self.connected:
+                    self.l_info('set_state','Connection restored')
+                    self.set_connected(True)
+            except SmartDeviceException as ex:
+                if self.connected:
+                    self.l_error('set_state','failed: {}'.format(ex))
+                    self.set_connected(False)
             except:
-                self.l_error('set_state','failed', exc_info=True)
+                if self.connected:
+                    self.l_error('set_state','failed', exc_info=True)
+                    self.set_connected(False)
         else:
-            self.l_debug('set_state', "Not connected")
+            if self.connected:
+                self.l_debug('set_state', "No device")
+                self.set_connected(False)
 
     def set_connected(self,st):
+        if st == self.connected:
+            return
         self.l_debug('set_connected', "{}".format(st), level=0, exc_info=False)
         self.connected = st
-        self.setDriver('GV1',1 if st else 0)
+        self.setDriver('GV0',1 if st else 0)
+        if st:
+            # Make sure current cfg is saved
+            self.l_debug('set_connected', "save_cfg".format(st), level=0, exc_info=False)
+            try:
+                self.cfg['host'] = self.dev.host
+                self.cfg['model'] = self.dev.model
+                self.controller.save_cfg(self.cfg)
+            except:
+                self.l_error('set_connected','failed', exc_info=True)
 
     def is_connected(self):
         return self.connected

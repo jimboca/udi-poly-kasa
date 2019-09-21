@@ -7,13 +7,17 @@ LOGGER = polyinterface.LOGGER
 
 class SmartStripNode(polyinterface.Node):
 
-    def __init__(self, controller, address, name, host):
-        self.host = host
+    def __init__(self, controller, address, name, dev=None, cfg=None):
         self.name = name
+        if dev is not None:
+            self.host = dev.host
+        else:
+            self.host = cfg['host']
         self.debug_level = 0
         self.st = None
+        self.default = 'UnknownStripModel'
         # Bug in current PyHS100 doesn't allow us to print dev.
-        self.l_debug('__init__','controller={} address={} name={} host={}'.format(controller,address,name,host))
+        self.l_debug('__init__','controller={} address={} name={} host={}'.format(controller,address,name,self.host))
         # The strip is it's own parent since the plugs are it's children
         super(SmartStripNode, self).__init__(self, address, address, name)
         self.controller = controller
