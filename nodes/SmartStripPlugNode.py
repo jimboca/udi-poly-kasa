@@ -36,6 +36,9 @@ class SmartStripPlugNode(polyinterface.Node):
         else:
             self.setDriver('ST', 0)
 
+    def is_connected(self):
+        return True
+
     def query(self):
         self.check_st()
         self.reportDrivers()

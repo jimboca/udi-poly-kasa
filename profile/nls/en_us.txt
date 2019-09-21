@@ -6,6 +6,14 @@ CMD-ctl-DISCOVER-NAME = Discover
 CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
 ST-ctl-ST-NAME = NodeServer Online
 
+ND-UnknownPlugModel-NAME = Unknown Plug Model
+ND-UnknownPlugModel-ICON = GenericCtl
+ND-UnknownBulbModel-NAME = Unknown Bulb Model
+ND-UnknownBulbModel-ICON = Lamp
+ND-UnknownStripModel-NAME = Unknown Strip Model
+ND-UnknownStripModel-ICON = GenericCtl
+
+
 ND-SmartStrip-NAME = Smart Strip
 ND-SmartStrip-ICON = GenericCtl
 ST-ss-ST-NAME = Strip Status
@@ -13,3 +21,30 @@ ST-ss-ST-NAME = Strip Status
 ND-SmartStripPlug-NAME = Smart Strip Plug
 ND-SmartStripPlug-ICON = GenericCtl
 ST-ssp-ST-NAME = Plug Status
+
+# SmartPlug
+ND-HS100US-NAME = HS100
+ND-HS100US-ICON = GenericCtl
+ND-HS110US-NAME = HS110US
+ND-HS110US-ICON = GenericCtl
+ST-sp-ST-NAME = Plug Status
+ST-spe-ST-NAME = Plug Status
+
+ST-spe-CC-NAME = Current
+ST-spe-CV-NAME = Voltage
+ST-spe-CPW-NAME = Power
+ST-spe-TPW-NAME = Total Energy
+
+ST-sp-GV0-NAME = Connected
+ST-spe-GV0-NAME = Connected
+
+# SmartBulb's
+
+ND-KL130US-NAME = Smart Bulb KL130US
+ND-KL130US-ICON = Lamp
+
+ND-KL110US-NAME = Smart Bulb KL110US
+ND-KL110US-ICON = Lamp
+
+ST-sb-ST-NAME = Bulb Status
+ST-sb-GV0-NAME = Connected

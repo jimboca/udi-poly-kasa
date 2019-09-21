@@ -22,7 +22,8 @@
     <nodeDef id="SmartStrip" nls="ss">
         <editors />
         <sts>
-            <st id="ST" editor="onoff" />
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
         </sts>
         <cmds>
             <sends />
@@ -46,5 +47,114 @@
             </accepts>
         </cmds>
     </nodeDef>
+
+    <nodeDef id="UnknownStripModel" nls="ss">
+        <editors />
+        <sts>
+            <st id="ST" editor="onoff" />
+            <st id="GV0" editor="bool" />
+        </sts>
+        <cmds>
+            <sends />
+            <accepts>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+            </accepts>
+        </cmds>
+    </nodeDef>
+
+    <nodeDef id="UnknownPlugModel" nls="sp">
+        <editors />
+        <sts>
+            <st id="ST" editor="onoff" />
+            <st id="GV0" editor="bool" />
+        </sts>
+        <cmds>
+            <sends />
+            <accepts>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+            </accepts>
+        </cmds>
+    </nodeDef>
+
+    <nodeDef id="UnknownBulbModel" nls="sb">
+        <editors />
+        <sts>
+            <st id="ST" editor="onoff" />
+            <st id="GV0" editor="bool" />
+        </sts>
+        <cmds>
+            <sends />
+            <accepts>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+            </accepts>
+        </cmds>
+    </nodeDef>
+
+    <nodeDef id="HS100US" nls="sp">
+        <editors />
+        <sts>
+            <st id="ST" editor="onoff" />
+            <st id="GV0" editor="bool" />
+        </sts>
+        <cmds>
+            <sends />
+            <accepts>
+                <cmd id="DON" />
+                <cmd id="DOF" />
+            </accepts>
+        </cmds>
+    </nodeDef>
+
+    <nodeDef id="HS110US" nls="spe">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
+          <st id="CC" editor="raw" />
+          <st id="CV" editor="raw" />
+          <st id="CPW" editor="watts" />
+          <st id="TPW" editor="raw" />
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+              <cmd id="DON" />
+              <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
+  <nodeDef id="KL130US" nls="sb">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+              <cmd id="DON" />
+              <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
+  <nodeDef id="KL110US" nls="sb">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+              <cmd id="DON" />
+              <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
 
 </nodeDefs>
