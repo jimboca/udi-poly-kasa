@@ -109,6 +109,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.1.1 10/01/2019
+  - Remove from cloud
 - 2.1.0 09/21/2019
   - Merge changes from @eagleco to support plugs, thank you!
   - Fixed to work for those with emeter (HS110) and those without (HS100)
