@@ -4,7 +4,6 @@
     "type": "python3",
     "executable": "kasa-poly.py",
     "install": "install.sh",
-    "install_cloud": "install_cloud.sh",
     "description": "TP-Link Kasa Node Server",
     "notice": "Your disclaimer here",
     "shortPoll": "30",
