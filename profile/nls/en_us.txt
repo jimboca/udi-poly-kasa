@@ -13,38 +13,70 @@ ND-UnknownBulbModel-ICON = Lamp
 ND-UnknownStripModel-NAME = Unknown Strip Model
 ND-UnknownStripModel-ICON = GenericCtl
 
+CDM-8 = Debug + Session Verbose
+CDM-9 = Debug + Session
+CDM-10 = Debug
+CDM-20 = Info
+CDM-30 = Warning
+CDM-40 = Error
+CDM-50 = Critical
 
 ND-SmartStrip-NAME = Smart Strip
 ND-SmartStrip-ICON = GenericCtl
 ST-ss-ST-NAME = Strip Status
+ST-ss-GV0-NAME = Connected
 
 ND-SmartStripPlug-NAME = Smart Strip Plug
 ND-SmartStripPlug-ICON = GenericCtl
 ST-ssp-ST-NAME = Plug Status
 
-# SmartPlug
-ND-HS100US-NAME = HS100
-ND-HS100US-ICON = GenericCtl
-ND-HS110US-NAME = HS110US
-ND-HS110US-ICON = GenericCtl
+# SmartPlugs
+ND-SmartPlug_NN-NAME = SmartPlug
+ND-SmartPlug_NE-NAME = SmartPlug Energy
+ND-SmartPlug_DN-NAME = SmartPlug Dmmable
+ND-SmartPlug_DE-NAME = SmartPlug Dimmable Energy
+ND-SmartPlug_NN-ICON = GenericCtl
+ND-SmartPlug_NE-ICON = GenericCtl
+ND-SmartPlug_DN-ICON = GenericCtl
+ND-SmartPlug_DE-ICON = GenericCtl
+
 ST-sp-ST-NAME = Plug Status
 ST-spe-ST-NAME = Plug Status
 
 ST-spe-CC-NAME = Current
 ST-spe-CV-NAME = Voltage
-ST-spe-CPW-NAME = Power
-ST-spe-TPW-NAME = Total Energy
+ST-spe-CPW-NAME = Current Power Used
+ST-spe-TPW-NAME = Total Power Used
 
 ST-sp-GV0-NAME = Connected
 ST-spe-GV0-NAME = Connected
 
 # SmartBulb's
+ND-SmartBulb_NNNN-NAME = SmartBulb
+ND-SmartBulb_DNNN-NAME = SmartBulb Dimmable
+ND-SmartBulb_DTNN-NAME = SmartBulb Dimmable Color Temperature
+ND-SmartBulb_DTNE-NAME = SmartBulb Dimmable Color Temperature Energy
+ND-SmartBulb_DNNE-NAME = SmartBulb Dimmable Energy
+ND-SmartBulb_DTCE-NAME = SmartBulb Color Energy
 
-ND-KL130US-NAME = Smart Bulb KL130US
-ND-KL130US-ICON = Lamp
+ND-SmartBulb_NNNN-ICON = Lamp
+ND-SmartBulb_DNNN-ICON = Lamp
+ND-SmartBulb_DTNN-ICON = Lamp
+ND-SmartBulb_DTNE-ICON = Lamp
+ND-SmartBulb_DNNE-ICON = Lamp
+ND-SmartBulb_DTCE-ICON = Lamp
 
-ND-KL110US-NAME = Smart Bulb KL110US
-ND-KL110US-ICON = Lamp
 
 ST-sb-ST-NAME = Bulb Status
 ST-sb-GV0-NAME = Connected
+ST-sb-GV1-NAME = Brightness
+ST-sb-GV2-NAME = Color Temperature
+ST-sb-GV3-NAME = Hue
+ST-sb-GV3-NAME = Saturation
+
+ST-spe-CC-NAME = Current
+ST-spe-CV-NAME = Voltage
+ST-spe-CPW-NAME = Current Power Used
+ST-spe-TPW-NAME = Total Power Used
+
+CMD-BRI-NAME = Brightness

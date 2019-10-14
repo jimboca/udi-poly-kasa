@@ -5,16 +5,41 @@
         <range uom="2" subset="0,1" />
     </editor>
 
+    <editor id="I_DEBUG">
+      <range uom="25" subset="8,9,10,20,30,40,50" nls="CDM"/>
+    </editor>
+
     <editor id="onoff">
         <range uom="78" subset="0,100" />
     </editor>
-    
-    <editor id="raw">
-        <range uom="56" subset="0-1600" />
+
+    <editor id="hue">
+        <range uom="100" min="0" max="359" prec="0" step="1" />
     </editor>
-    
+
+    <editor id="sat">
+        <range uom="100" min="1" max="100" prec="0" step="1" />
+    </editor>
+
+    <editor id="bri">
+        <range uom="100" min="1" max="100" prec="0" step="1" />
+    </editor>
+
+    <!-- PLINK_KELVIN = {'LB130': (2500, 9000),
+                     'LB120': (2700, 6500),
+                     'LB230': (2500, 9000),
+                     'KB130': (2500, 9000)}
+    -->
+    <editor id="ctemp">
+        <range uom="56" min="2500" max="9000" prec="0" step="1" />
+    </editor>
+
+    <editor id="raw">
+        <range uom="56" subset="0-1600" prec="2" />
+    </editor>
+
     <editor id="watts">
-        <range uom="73" subset="0-1600" prec="1"/>
+        <range uom="73" min="0" max="99999" prec="2"/>
     </editor>
 
 </editors>

@@ -15,7 +15,6 @@ class SmartStripNode(polyinterface.Node):
             self.host = cfg['host']
         self.debug_level = 0
         self.st = None
-        self.default = 'UnknownStripModel'
         # Bug in current PyHS100 doesn't allow us to print dev.
         self.l_debug('__init__','controller={} address={} name={} host={}'.format(controller,address,name,self.host))
         # The strip is it's own parent since the plugs are it's children
@@ -35,11 +34,18 @@ class SmartStripNode(polyinterface.Node):
         self.check_st()
 
     def check_st(self):
+        if self.is_connected():
+            self.setDriver('GV0',1)
+        else:
+            self.setDriver('GV0',0)
         is_on = False
         # If any are on, then I am on.
         for pnum in range(self.dev.num_children):
-            if self.dev.is_on(index=pnum):
-                is_on = True
+            try:
+                if self.dev.is_on(index=pnum):
+                    is_on = True
+            except Exception as ex:
+                self.l_error('check_st','failed', exc_info=True)
         self.set_st(is_on)
 
     def set_st(self,st):
@@ -82,7 +88,10 @@ class SmartStripNode(polyinterface.Node):
     def cmd_set_off(self, command):
         self.set_off()
 
-    drivers = [{'driver': 'ST', 'value': 0, 'uom': 78}]
+    drivers = [
+        {'driver': 'ST', 'value': 0, 'uom': 78},
+        {'driver': 'GV0', 'value': 0, 'uom': 2}  # Connected
+    ]
     id = 'SmartStrip'
     commands = {
         'DON': cmd_set_on,

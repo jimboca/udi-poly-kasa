@@ -107,41 +107,37 @@ class Controller(polyinterface.Controller):
                 self.add_node(dev=dev)
         self.l_info("discover_new","done")
 
-    #def add_node(self,cname,mac,host,model,alias):
     # Add a node based on dev returned from discover or the stored config.
     def add_node(self, dev=None, cfg=None):
         if dev is not None:
             type = dev.__class__.__name__
             mac  = dev.mac
-            name = dev.alias
-            cfg  = { "type": type, "name": name, "host": dev.host, "mac": mac, "model": dev.model}
-        elif cfg is not None:
-            type = cfg['type']
-            mac  = cfg['mac']
-            name = cfg['name']
-        else:
+            address = get_valid_node_name(mac)
+            if type == 'SmartStrip':
+                # String doesn't have an alias so use the mac
+                name = 'SmartStrip {}'.format(mac)
+            else:
+                name = dev.alias
+            cfg  = { "type": type, "name": name, "host": dev.host, "mac": mac, "model": dev.model, "address": address}
+        elif cfg is None:
             self.l_error("add_node","INTERNAL ERROR: dev={} and cfg={}".format(dev,cfg))
             return False
-        address = get_valid_node_name(mac)
-        self.l_info('discover',"adding {} '{}' {}".format(type,name,address))
-        if type == 'SmartStrip':
-            # Smartstrip doesn't have a name, so use the MAC
-            name = 'SmartStrip {}'.format(mac)
-            cfg['name'] = name
-            self.l_info('discover','adding SmartStrip {}'.format(name))
-            node = self.addNode(SmartStripNode(self, address, name,  dev=dev, cfg=cfg))
-        elif type == 'SmartPlug':
-            node = self.addNode(SmartPlugNode(self, address, name, dev=dev, cfg=cfg))
-        elif type == 'SmartBulb':
-            node = self.addNode(SmartBulbNode(self, address, name, dev=dev, cfg=cfg))
+        self.l_info('discover',"adding {} '{}' {}".format(cfg['type'],cfg['name'],cfg['address']))
+        #
+        # Add Based on device type.  SmartStrip is a unique type, all others
+        # are handled by SmartDevice
+        #
+        if cfg['type'] == 'SmartStrip':
+            node = self.addNode(SmartStripNode(self, cfg['address'], cfg['name'],  dev=dev, cfg=cfg))
+        elif cfg['type'] == 'SmartPlug':
+            node = self.addNode(SmartPlugNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
+        elif cfg['type'] == 'SmartBulb':
+            node = self.addNode(SmartBulbNode(self, cfg['address'], name, dev=dev, cfg=cfg))
         else:
-            self.l_error('discover',"Device not yet supported: {}".format(dev))
+            self.l_error('discover',"Device type not yet supported: {}".format(cfg['type']))
             return False
         # We always add it to update the host if necessary
         self.nodes_by_mac[self.smac(mac)] = node
-        if dev is not None:
-            # Device was passed in, so save the cfg we have so far
-            self.save_cfg(cfg)
         return True
 
     def smac(self,mac):
@@ -152,8 +148,8 @@ class Controller(polyinterface.Controller):
         return True if self.smac(mac) in cparams else False
 
     def save_cfg(self,cfg):
+        self.l_debug('save_cfg','Saving config: {}'.format(cfg))
         js = json.dumps(cfg)
-        self.l_debug('save_cfg','Saving config: {}'.format(js))
         cparams = self.polyConfig['customParams']
         cparams[self.smac(cfg['mac'])] = js
         self.addCustomParam(cparams)

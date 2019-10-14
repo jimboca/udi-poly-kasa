@@ -9,14 +9,6 @@ from pyHS100 import SmartDeviceException
 
 LOGGER = polyinterface.LOGGER
 
-_known_devices = {
-    'HS100US': True,
-    'HS110US': True,
-    'HS300US': True,
-    'KL130US': True,
-    'KL110US': True,
-}
-
 class SmartDeviceNode(polyinterface.Node):
 
     def __init__(self, controller, parent_address, address, name, dev, cfg):
@@ -26,20 +18,17 @@ class SmartDeviceNode(polyinterface.Node):
         self.cfg  = cfg
         self.l_debug('__init__','dev={}'.format(dev))
         self.l_debug('__init__','cfg={}'.format(cfg))
-        if dev is not None:
-            self.host = dev.host
-        else:
-            self.host = cfg['host']
+        self.host = cfg['host']
         self.debug_level = 0
         self.st = None
         self.connected = None # So start will force setting proper status
-        sid =  re.sub(r'[\(\)]+', '', cfg['model'])
-        if sid in _known_devices:
-            self.id = sid
-        else:
-            self.id = self.default
-            self.l_error('__init__',"Device '{}' is an uknown model {}, using {}".format(name,sid,self.id))
         self.l_debug('__init__','controller={} address={} name={} host={}'.format(controller,address,name,self.host))
+        if cfg['emeter']:
+            self.drivers.append({'driver': 'CC', 'value': 0, 'uom': 1}) #amps
+            self.drivers.append({'driver': 'CV', 'value': 0, 'uom': 72}) #volts
+            self.drivers.append({'driver': 'CPW', 'value': 0, 'uom': 73}) #watts
+            self.drivers.append({'driver': 'TPW', 'value': 0, 'uom': 33}) #kWH
+        self.cfg['id'] = self.id
         super().__init__(controller, parent_address, address, name)
 
     def start(self):
@@ -57,6 +46,33 @@ class SmartDeviceNode(polyinterface.Node):
         if not self.connected:
             self.l_info('longPoll', 'Not connected, will retry...')
             self.connect()
+        if self.connected:
+            self.set_energy()
+
+    def set_energy(self):
+        if self.cfg['emeter']:
+            try:
+                energy = self.dev.get_emeter_realtime()
+                self.l_debug('set_energy','{}'.format(energy))
+                if energy is not None:
+                    # rounding the values reduces driver updating traffic for
+                    # insignificant changes
+                    if 'current' in energy:
+                        self.setDriver('CC',round(energy['current'],3))
+                    if 'voltage' in energy:
+                        self.setDriver('CV',round(energy['voltage'],1))
+                    if 'power' in energy:
+                        self.setDriver('CPW',round(energy['power'],3))
+                    elif 'power_mw' in energy:
+                        self.setDriver('CPW',round(energy['power_mw']/1000,3))
+                    if 'total' in energy:
+                        self.setDriver('TPW',round(energy['total'],3))
+            except:
+                self.l_error('set_energy','failed', exc_info=True)
+
+    # Nothing by default
+    def set_all_drivers(self):
+        pass
 
     def connect(self):
         self.l_debug('connect', 'connected={}'.format(self.is_connected()), level=0, exc_info=False)
@@ -78,10 +94,12 @@ class SmartDeviceNode(polyinterface.Node):
     def set_on(self):
         self.dev.turn_on()
         self.set_state()
+        self.energy()
 
     def set_off(self):
         self.dev.turn_off()
         self.set_state()
+        self.set_energy()
 
     def set_state(self):
         # We don't use self.connected here because dev might be good, but device is unplugged
@@ -99,10 +117,16 @@ class SmartDeviceNode(polyinterface.Node):
                 if self.connected:
                     self.l_error('set_state','failed: {}'.format(ex))
                     self.set_connected(False)
-            except:
+            except Exception as ex:
                 if self.connected:
                     self.l_error('set_state','failed', exc_info=True)
                     self.set_connected(False)
+            # On restore, or initial startup, set all drivers.
+            if self.connected:
+                try:
+                    self.set_all_drivers()
+                except Exception as ex:
+                    self.l_error('set_state','set_all_drivers failed: {}'.format(ex),exc_info=True)
         else:
             if self.connected:
                 self.l_debug('set_state', "No device")
@@ -123,6 +147,11 @@ class SmartDeviceNode(polyinterface.Node):
                 self.controller.save_cfg(self.cfg)
             except:
                 self.l_error('set_connected','failed', exc_info=True)
+
+    def set_bri(self,val):
+        if self.connected:
+            self.dev.brightness = val
+            self.setDriver('GV1',self.dev.brightness)
 
     def is_connected(self):
         return self.connected
@@ -149,3 +178,8 @@ class SmartDeviceNode(polyinterface.Node):
 
     def cmd_set_off(self, command):
         self.set_off()
+
+    def cmd_set_bri(self,command):
+        val = int(command.get('value'))
+        self.l_info("cmd_debug_mode",val)
+        self.set_bri(val)

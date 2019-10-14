@@ -12,6 +12,9 @@
               <cmd id="DOF" />
             </sends>
             <accepts>
+              <cmd id="DEBUG">
+                <p id="" editor="I_DEBUG" init="GV1" />
+              </cmd>
               <cmd id="QUERY" />
               <cmd id="DISCOVER" />
               <cmd id="UPDATE_PROFILE" />
@@ -48,7 +51,8 @@
         </cmds>
     </nodeDef>
 
-    <nodeDef id="UnknownStripModel" nls="ss">
+    <!-- SmartPlug_NN - Not Dimmable, No Emeter -->
+    <nodeDef id="SmartPlug_NN" nls="sp">
         <editors />
         <sts>
             <st id="ST" editor="onoff" />
@@ -63,71 +67,28 @@
         </cmds>
     </nodeDef>
 
-    <nodeDef id="UnknownPlugModel" nls="sp">
-        <editors />
-        <sts>
-            <st id="ST" editor="onoff" />
-            <st id="GV0" editor="bool" />
-        </sts>
-        <cmds>
-            <sends />
-            <accepts>
-                <cmd id="DON" />
-                <cmd id="DOF" />
-            </accepts>
-        </cmds>
-    </nodeDef>
-
-    <nodeDef id="UnknownBulbModel" nls="sb">
-        <editors />
-        <sts>
-            <st id="ST" editor="onoff" />
-            <st id="GV0" editor="bool" />
-        </sts>
-        <cmds>
-            <sends />
-            <accepts>
-                <cmd id="DON" />
-                <cmd id="DOF" />
-            </accepts>
-        </cmds>
-    </nodeDef>
-
-    <nodeDef id="HS100US" nls="sp">
-        <editors />
-        <sts>
-            <st id="ST" editor="onoff" />
-            <st id="GV0" editor="bool" />
-        </sts>
-        <cmds>
-            <sends />
-            <accepts>
-                <cmd id="DON" />
-                <cmd id="DOF" />
-            </accepts>
-        </cmds>
-    </nodeDef>
-
-    <nodeDef id="HS110US" nls="spe">
-      <editors />
-      <sts>
-          <st id="ST" editor="onoff" />
-          <st id="GV0" editor="bool" />
-          <st id="CC" editor="raw" />
-          <st id="CV" editor="raw" />
-          <st id="CPW" editor="watts" />
-          <st id="TPW" editor="raw" />
-      </sts>
-      <cmds>
-          <sends />
-          <accepts>
-              <cmd id="DON" />
-              <cmd id="DOF" />
-          </accepts>
-      </cmds>
+  <!-- SmartPlug_NE - Not Dimmable, Emeter -->
+  <nodeDef id="SmartPlug_NE" nls="spe">
+    <editors />
+    <sts>
+        <st id="ST" editor="onoff" />
+        <st id="GV0" editor="bool" />
+        <st id="CC" editor="raw" />      <!-- Driver=Current Current = energy['current'] -->
+        <st id="CV" editor="raw" />      <!-- Driver=Current Voltage = energy['voltage'] -->
+        <st id="CPW" editor="watts" />   <!-- Driver=Current Power Used = energy['power'] -->
+        <st id="TPW" editor="watts" />   <!-- Driver=Total Power Used = energy['total'] -->
+    </sts>
+    <cmds>
+        <sends />
+        <accepts>
+            <cmd id="DON" />
+            <cmd id="DOF" />
+        </accepts>
+    </cmds>
   </nodeDef>
 
-  <nodeDef id="KL130US" nls="sb">
+  <!-- Bulb - Just a bulb, does it even exist? -->
+  <nodeDef id="SmartBulb_NNNN" nls="sb">
       <editors />
       <sts>
           <st id="ST" editor="onoff" />
@@ -142,17 +103,111 @@
       </cmds>
   </nodeDef>
 
-  <nodeDef id="KL110US" nls="sb">
+  <!-- Bulb - Only Dimmable -->
+  <nodeDef id="SmartBulb_DNNN" nls="sb">
       <editors />
       <sts>
           <st id="ST" editor="onoff" />
           <st id="GV0" editor="bool" />
+          <st id="GV1" editor="bri" /> <!-- Brightness -->
       </sts>
       <cmds>
           <sends />
           <accepts>
-              <cmd id="DON" />
-              <cmd id="DOF" />
+            <cmd id="BRI">
+              <p id="" editor="bri" init="GV1" />
+            </cmd>
+            <cmd id="DON" />
+            <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
+  <!-- Bulb - Dimmable, With Energy -->
+  <nodeDef id="SmartBulb_DNNE" nls="sb">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
+          <st id="GV1" editor="bri" /> <!-- Brightness -->
+          <st id="CPW" editor="watts" />   <!-- Driver=Current Power Used = energy['power_mw'] -->
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+            <cmd id="BRI">
+              <p id="" editor="bri" init="GV1" />
+            </cmd>
+            <cmd id="DON" />
+            <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
+  <!-- Bulb -  Dimmable & Color Temperature -->
+  <nodeDef id="SmartBulb_DTNN" nls="sb">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
+          <st id="GV1" editor="bri" /> <!-- Brightness -->
+          <st id="GV2" editor="ctemp" /> <!-- Color Temperature -->
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+            <cmd id="BRI">
+              <p id="" editor="bri" init="GV1" />
+            </cmd>
+            <cmd id="DON" />
+            <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
+  <!-- Bulb - Dimmable, Full Color -->
+  <nodeDef id="SmartBulb_DTCN" nls="sb">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
+          <st id="GV1" editor="bri" /> <!-- Brightness -->
+          <st id="GV2" editor="ctemp" /> <!-- Color Temperature -->
+          <st id="GV3" editor="hue" /> <!-- Hue -->
+          <st id="GV4" editor="sat" /> <!-- Saturation -->
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+            <cmd id="BRI">
+              <p id="" editor="bri" init="GV1" />
+            </cmd>
+            <cmd id="DON" />
+            <cmd id="DOF" />
+          </accepts>
+      </cmds>
+  </nodeDef>
+
+  <!-- Bulb - Dimmable, Full Color -->
+  <nodeDef id="SmartBulb_DTCE" nls="sb">
+      <editors />
+      <sts>
+          <st id="ST" editor="onoff" />
+          <st id="GV0" editor="bool" />
+          <st id="GV1" editor="bri" /> <!-- Brightness -->
+          <st id="GV2" editor="ctemp" /> <!-- Color Temperature -->
+          <st id="GV3" editor="hue" /> <!-- Hue -->
+          <st id="GV4" editor="sat" /> <!-- Saturation -->
+          <st id="CPW" editor="watts" />   <!-- Driver=Current Power Used = energy['power_mw'] -->
+      </sts>
+      <cmds>
+          <sends />
+          <accepts>
+            <cmd id="BRI">
+              <p id="" editor="bri" init="GV1" />
+            </cmd>
+            <cmd id="DON" />
+            <cmd id="DOF" />
           </accepts>
       </cmds>
   </nodeDef>

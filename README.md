@@ -32,20 +32,23 @@ This node server makes every attempt to handle devices which are not responding 
 
 The node server does not require that you reserve IP addresses for the devices, the device address is remembered based on it's MAC address, so if the IP address changes, it will be properly handled.
 
-## Supported Kasa Devices
+## Kasa Devices
+
+### Known working
 
 The known list of supported devices models are:
   1 HS100 (US)
   1 HS110 (US)
   1 HS300 (US)
   1 KL130 (US)
-    * Currently limited to on/off. Can not set brightness, colors or temperature yet.
+    * Currently limited to on/off and brightness. Can not set colors or temperature yet.
   1 KL110 (US)
-    * Currently limited to on/off. Can not set brightness
+
+If you have another device not listed, please let me know.
 
 ### Unknown devices
 
-Any unknown device model should show up as a default device but may not allow proper control.  Please submit an issue to [UDI Poly Kasa Issues](https://github.com/jimboca/udi-poly-kasa/issues) Feel free to Fork this repo and add support as you like and send me a pull request.
+All other simple plug and bulb devices should work, the nodeserver attempts to figure out the capabilities of the device instead of hardcoding based on the model.  But if you have an issue please add to [UDI Poly Kasa Issues](https://github.com/jimboca/udi-poly-kasa/issues) Feel free to Fork this repo and add support as you like and send me a pull request.
 
 ## Kasa Controller
 
@@ -109,6 +112,9 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.2.0 10/13/2019
+  - Lot's of rework to allow supporting any Kasa device based on the capabilities instead of hardcoding the model names.
+  - Set Brightness also working.
 - 2.1.1 10/01/2019
   - Remove from cloud
 - 2.1.0 09/21/2019
