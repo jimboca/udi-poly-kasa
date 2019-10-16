@@ -42,6 +42,8 @@ class SmartBulbNode(SmartDeviceNode):
             cfg['emeter'] = dev.has_emeter
             cfg['color']  = dev.is_color
             cfg['color_temp'] = dev.is_variable_color_temp
+        else:
+            self.id = cfg['id']
         if cfg['color_temp']:
             self.drivers.append({'driver': 'GV2', 'value': 0, 'uom': 56})
         if cfg['color']:

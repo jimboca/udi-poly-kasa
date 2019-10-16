@@ -50,7 +50,7 @@ class Controller(polyinterface.Controller):
                     if self.nodes[node].is_connected():
                         self.nodes[node].longPoll()
                     else:
-                        self.l_info('longPoll','Previously known device not responding {} {}'.format(self.nodes[node].address,self.nodes[node].name))
+                        self.l_info('longPoll',"Previously known device not responding {} '{}'".format(self.nodes[node].address,self.nodes[node].name))
                         all_connected = False
                 except:
                     pass # in case node doesn't have a longPoll method
