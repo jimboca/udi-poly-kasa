@@ -19,6 +19,7 @@ class Controller(polyinterface.Controller):
         self.debug_level = 0 # TODO: More levels to add pyHS100 debugging (see discover.py)
         self.hb = 0
         self.nodes_by_mac = {}
+        self.discover_done = False
 
     def start(self):
         LOGGER.info('Starting {}'.format(self.name))
@@ -29,6 +30,9 @@ class Controller(polyinterface.Controller):
         self.discover()
 
     def shortPoll(self):
+        if not self.discover_done:
+            self.l_info('shortPoll','waiting for discover to complete')
+            return
         for node in self.nodes:
             self.l_debug('shortPoll', 'node={} node.address={} self.address={}'.format(node,self.nodes[node].address,self.address),level=1)
             if self.nodes[node].address != self.address:
@@ -36,6 +40,9 @@ class Controller(polyinterface.Controller):
 
     def longPoll(self):
         self.heartbeat()
+        if not self.discover_done:
+            self.l_info('longPoll','waiting for discover to complete')
+            return
         all_connected = True
         for node in self.nodes:
             if self.nodes[node].address != self.address:
@@ -43,6 +50,7 @@ class Controller(polyinterface.Controller):
                     if self.nodes[node].is_connected():
                         self.nodes[node].longPoll()
                     else:
+                        self.l_info('longPoll','Previously known device not responding {} {}'.format(self.nodes[node].address,self.nodes[node].name))
                         all_connected = False
                 except:
                     pass # in case node doesn't have a longPoll method
@@ -81,6 +89,7 @@ class Controller(polyinterface.Controller):
                 if cfg is not None:
                     self.l_info('discover', "Adding previously known device that didn't respond to discover: {}".format(cfg))
                     self.add_node(cfg=cfg)
+        self.discover_done = True
         LOGGER.info("discover: done")
 
     def discover_new(self):
@@ -110,15 +119,14 @@ class Controller(polyinterface.Controller):
     # Add a node based on dev returned from discover or the stored config.
     def add_node(self, dev=None, cfg=None):
         if dev is not None:
-            type = dev.__class__.__name__
+            type =  dev.__class__.__name__
             mac  = dev.mac
-            address = get_valid_node_name(mac)
             if type == 'SmartStrip':
                 # String doesn't have an alias so use the mac
                 name = 'SmartStrip {}'.format(mac)
             else:
                 name = dev.alias
-            cfg  = { "type": type, "name": name, "host": dev.host, "mac": mac, "model": dev.model, "address": address}
+            cfg  = { "type": type, "name": name, "host": dev.host, "mac": mac, "model": dev.model, "address": get_valid_node_name(mac)}
         elif cfg is None:
             self.l_error("add_node","INTERNAL ERROR: dev={} and cfg={}".format(dev,cfg))
             return False
@@ -132,12 +140,12 @@ class Controller(polyinterface.Controller):
         elif cfg['type'] == 'SmartPlug':
             node = self.addNode(SmartPlugNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
         elif cfg['type'] == 'SmartBulb':
-            node = self.addNode(SmartBulbNode(self, cfg['address'], name, dev=dev, cfg=cfg))
+            node = self.addNode(SmartBulbNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
         else:
             self.l_error('discover',"Device type not yet supported: {}".format(cfg['type']))
             return False
         # We always add it to update the host if necessary
-        self.nodes_by_mac[self.smac(mac)] = node
+        self.nodes_by_mac[self.smac(cfg['mac'])] = node
         return True
 
     def smac(self,mac):
