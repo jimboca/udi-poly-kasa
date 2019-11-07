@@ -106,11 +106,12 @@ class Controller(polyinterface.Controller):
                     self.l_warning('discover_new',"Updating '{}' host from {} to {}".format(node.name,node.host,dev.host))
                     node.host = dev.host
                     node.connect()
-                elif not node.is_connected():
-                    # Try again
-                    node.connect()
                 else:
-                    self.l_info('discover_new', "'{}' host is {} same as {}".format(node.name,node.host,dev.host))
+                    self.l_info('discover_new', "Connected:{} '{}'".format(node.is_connected(),node.name))
+                    if not node.is_connected():
+                        # Try again
+                        self.l_info('discover_new', "Connected:{} '{}' host is {} same as {}".format(node.name,node.host,dev.host))
+                        node.connect()
             else:
                 self.l_info('discover_new','found new device {}'.format(dev.alias))
                 self.add_node(dev=dev)

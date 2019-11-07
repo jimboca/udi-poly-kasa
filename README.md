@@ -112,6 +112,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.2.2 11/06/2019
+  - Fix to reconnect to device that wasn't responding when nodeserver started
 - 2.2.1 10/15/2019
   - Fix crash when discover takes a long time to complete and devices are not yet initialized for shortPoll
 - 2.2.0 10/13/2019

@@ -67,6 +67,7 @@ class SmartDeviceNode(polyinterface.Node):
                         self.setDriver('CPW',round(energy['power_mw']/1000,3))
                     if 'total' in energy:
                         self.setDriver('TPW',round(energy['total'],3))
+            #trap SmartDeviceException here with simple error message
             except:
                 self.l_error('set_energy','failed', exc_info=True)
 
