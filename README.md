@@ -7,12 +7,9 @@ This is the [TP Link Kasa](https://www.kasasmart.com/us) Poly for the [Universal
 (c) JimBoCA aka Jim Searle
 MIT license.
 
-This node server is intended to support all devices supported by the [pyHS100 Python Library](https://github.com/GadgetReactor/pyHS100/blob/master/README.md) but currently it only supports:
-- PowerStrips
-  - HS300
-more will be added as requested, and time allows.  
+This node server is intended to support all devices supported by the [pyHS100 Python Library](https://github.com/GadgetReactor/pyHS100/blob/master/README.md) 
 
-This nodeserver relies on a mostly undocumented and officially supported local APO which TP-Link could break at any time.
+This nodeserver relies on a mostly undocumented and officially supported local API which of course TP-Link could break at any time.
 
 ## Installation
 
@@ -28,9 +25,9 @@ This nodeserver will only work on a machine running on your local network, it wi
 
 ## Usage
 
-This node server makes every attempt to handle devices which are not responding for any reason, like they are unplugged or powered off.  When a device is Discovered, it is remembered, so if it doesn't respond on the next discovery it will still be an active device and when plugged back in it will be seen as connected.
+This node server makes every attempt to handle devices which are not responding for any reason, like they are unplugged or powered off.  When a device is Discovered it is remembered, so if it doesn't respond on the next discovery it will still be an active device and when powered up it will be seen as connected.
 
-The node server does not require that you reserve IP addresses for the devices, the device address is remembered based on it's MAC address, so if the IP address changes, it will be properly handled.
+The node server does not require that you reserve IP addresses for the devices, the device address is remembered based on it's MAC address, so if the IP address changes, it will be properly handled. (This has not been extensively tested, needs more verification)
 
 ## Kasa Devices
 
@@ -44,7 +41,7 @@ The known list of supported devices models are:
     * Currently limited to on/off and brightness. Can not set colors or temperature yet.
   1 KL110 (US)
 
-If you have another device not listed, please let me know.
+If you have another device not listed and it is working properly please let me know.
 
 ### Unknown devices
 
@@ -65,7 +62,7 @@ The settings for this node are
    * The debug printing mode
 #### TODO: Short Poll
    * This is how often it will Poll the Devices to get status
-#### Long Poll
+#### TODO: Long Poll
    * Updates other device status like emeter.
 
 ### Node Commands
