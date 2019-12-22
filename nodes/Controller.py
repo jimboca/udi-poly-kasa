@@ -59,6 +59,8 @@ class Controller(polyinterface.Controller):
             self.discover_new()
 
     def query(self):
+        self.setDriver('ST', 1)
+        self.reportDrivers()
         self.check_params()
         for node in self.nodes:
             if self.nodes[node].address != self.address:
