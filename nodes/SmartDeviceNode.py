@@ -95,7 +95,7 @@ class SmartDeviceNode(polyinterface.Node):
     def set_on(self):
         self.dev.turn_on()
         self.set_state()
-        self.energy()
+        self.set_energy()
 
     def set_off(self):
         self.dev.turn_off()
@@ -182,5 +182,5 @@ class SmartDeviceNode(polyinterface.Node):
 
     def cmd_set_bri(self,command):
         val = int(command.get('value'))
-        self.l_info("cmd_debug_mode",val)
+        self.l_info("cmd_set_bri",val)
         self.set_bri(val)

@@ -1,3 +1,4 @@
-polyinterface>=2.0.0
+polyinterface>=2.0.34
 deprecation
+# Switch to python-kasa which isn't on PyPi yet
 pyHS100==0.3.5

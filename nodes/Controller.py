@@ -2,6 +2,7 @@
 import polyinterface
 import logging,re,json,sys
 from node_funcs import get_valid_node_name
+sys.path.insert(0,"pyHS100")
 from pyHS100 import Discover
 from nodes import SmartStripNode
 from nodes import SmartPlugNode
@@ -24,7 +25,8 @@ class Controller(polyinterface.Controller):
     def start(self):
         LOGGER.info('Starting {}'.format(self.name))
         self.setDriver('ST', 1)
-        self.check_profile()
+        self.server_data = self.poly.get_server_data(check_profile=True)
+        LOGGER.info('Version {}'.format(self.server_data['version']))
         self.heartbeat()
         self.check_params()
         self.discover()
@@ -78,7 +80,7 @@ class Controller(polyinterface.Controller):
     def discover(self):
         self.l_info('discover','start')
         devm = {}
-        for dev in Discover.discover().values():
+        for dev in Discover.discover(target=self.poly.network_interface['broadcast']).values():
             self.l_debug('discover',"Got Device\n\tAlias:{}\n\tModel:{}\n\tMac:{}\n\tHost:{}".
                     format(dev.alias,dev.model,dev.mac,dev.host))
             #if self.add_node(cname,dev.mac,dev.host,dev.model,dev.alias):
@@ -96,7 +98,7 @@ class Controller(polyinterface.Controller):
 
     def discover_new(self):
         self.l_info('discover_new','start')
-        for dev in Discover.discover().values():
+        for dev in Discover.discover(target=self.poly.network_interface['broadcast']).values():
             self.l_debug('discover_new',"Got Device\n\tAlias:{}\n\tModel:{}\n\tMac:{}\n\tHost:{}".
                     format(dev.alias,dev.model,dev.mac,dev.host))
             # Known Device?
@@ -111,8 +113,8 @@ class Controller(polyinterface.Controller):
                 else:
                     self.l_info('discover_new', "Connected:{} '{}'".format(node.is_connected(),node.name))
                     if not node.is_connected():
-                        # Try again
-                        self.l_info('discover_new', "Connected:{} '{}' host is {} same as {}".format(node.name,node.host,dev.host))
+                        # Previously connected node
+                        self.l_info('discover_new', "Connected:{} '{}' host is {} same as {}".format(node.is_connected(),node.name,node.host,dev.host))
                         node.connect()
             else:
                 self.l_info('discover_new','found new device {}'.format(dev.alias))
@@ -183,11 +185,6 @@ class Controller(polyinterface.Controller):
 
     def check_params(self):
         pass
-
-    # TODO: Check if it needs to be update
-    def check_profile(self):
-        self.l_info('check_profile','start')
-        self.update_profile()
 
     def update_profile(self):
         self.l_info('update_profile','start')

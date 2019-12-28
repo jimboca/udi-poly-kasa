@@ -1,5 +1,5 @@
 #!/bin/sh -x
 
-PYTHONPATH=./
+PYTHONPATH=./python-kasa
 export PYTHONPATH
-python3 pyHS100/cli.py
+python3 python-kasa/kasa/cli.py

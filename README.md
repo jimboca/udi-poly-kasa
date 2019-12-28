@@ -7,7 +7,7 @@ This is the [TP Link Kasa](https://www.kasasmart.com/us) Poly for the [Universal
 (c) JimBoCA aka Jim Searle
 MIT license.
 
-This node server is intended to support all devices supported by the [pyHS100 Python Library](https://github.com/GadgetReactor/pyHS100/blob/master/README.md) 
+This node server is intended to support all devices supported by the [pyHS100 Python Library](https://github.com/GadgetReactor/pyHS100/blob/master/README.md)
 
 This nodeserver relies on a mostly undocumented and officially supported local API which of course TP-Link could break at any time.
 
@@ -40,6 +40,8 @@ The known list of supported devices models are:
   1 KL130 (US)
     * Currently limited to on/off and brightness. Can not set colors or temperature yet.
   1 KL110 (US)
+  1 KL120 (US)
+  * Currently limited to on/off and brightness. Can not set temperature yet.
 
 If you have another device not listed and it is working properly please let me know.
 
@@ -109,6 +111,9 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.2.3: 12/27/2019
+  - Add support for KL120 (Dimmable Color Temperature with Energy)
+  - Switch to locally checked out pyHS100 with discovery fix for Polisy (Need to Test)
 - 2.2.2 11/06/2019
   - Fix to reconnect to device that wasn't responding when nodeserver started
 - 2.2.1 10/15/2019
