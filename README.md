@@ -113,7 +113,7 @@ Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and s
 # Release Notes
 - 2.2.3: 12/27/2019
   - Add support for KL120 (Dimmable Color Temperature with Energy)
-  - Switch to locally checked out pyHS100 with discovery fix for Polisy (Need to Test)
+  - Switch to locally checked out pyHS100 with discovery fix for Polisy
 - 2.2.2 11/06/2019
   - Fix to reconnect to device that wasn't responding when nodeserver started
 - 2.2.1 10/15/2019
