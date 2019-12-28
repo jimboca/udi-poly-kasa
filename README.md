@@ -34,12 +34,12 @@ The node server does not require that you reserve IP addresses for the devices, 
 ### Known working
 
 The known list of supported devices models are:
-  1 HS100 (US)
-  1 HS110 (US)
-  1 HS300 (US)
-  1 KL130 (US)
+  - HS100 (US)
+  - HS110 (US)
+  - HS300 (US)
+  - KL130 (US)
     * Currently limited to on/off and brightness. Can not set colors or temperature yet.
-  1 KL110 (US)
+  - KL110 (US)
 
 If you have another device not listed and it is working properly please let me know.
 
