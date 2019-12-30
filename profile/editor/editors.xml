@@ -42,4 +42,77 @@
         <range uom="73" min="0" max="99999" prec="2"/>
     </editor>
 
+
+    <!-- Color XY Value -->
+    <editor id="HCLXY">
+        <range uom="56" min="0" max="1" prec="4" />
+    </editor>
+
+    <!-- Color RGB Value -->
+    <editor id="HCLRGB">
+        <range uom="100" min="0" max="255" step="1" prec="0" />
+    </editor>
+
+    <!-- Brightness -->
+    <editor id="HCLST">
+        <range uom="51" min="0" max="100" prec="4" />
+    </editor>
+
+    <!-- Color Selector -->
+    <editor id="HCSEL">
+        <range uom="25" subset="1-24" nls="COLORS_HCSEL" />
+    </editor>
+
+    <!-- Alert Selector -->
+    <editor id="HASEL">
+        <range uom="25" subset="1-3" nls="ALERTS_HASEL" />
+    </editor>
+
+    <!-- Effect Selector -->
+    <editor id="HESEL">
+        <range uom="25" subset="1-2" nls="EFFECTS_HESEL" />
+    </editor>
+
+    <!-- Hue Editor -->
+    <editor id="HCLHUE">
+        <range uom="56" min="0" max="65535" prec="0" step="1" />
+    </editor>
+
+    <!-- Saturation Editor -->
+    <editor id="HCLSAT">
+        <range uom="100" min="0" max="254" prec="0" step="1" />
+    </editor>
+
+    <!-- Brightness Editor -->
+    <editor id="HCLBRI">
+        <range uom="100" min="1" max="254" prec="0" step="1" />
+    </editor>
+
+    <!-- Hue Kelvin Editor
+    TPLINK_KELVIN = {'LB130': (2500, 9000),
+                     'LB120': (2700, 6500),
+                     'LB230': (2500, 9000),
+                     'KB130': (2500, 9000),
+                     'KL130': (2500, 9000),
+                     'KL120': (2700, 6500)}
+                   -->
+    <editor id="HKELVIN">
+        <range uom="26" min="2500" max="6500" prec="0" step="1" />
+    </editor>
+
+    <!-- Hue Duration Editor -->
+    <editor id="HDURATION">
+        <range uom="42" min="0" max="540000" prec="0" step="100" />
+    </editor>
+
+    <!-- Number of Lights Editor -->
+    <editor id="HGRNUM">
+        <range uom="56" min="0" max="50" prec="0" step="1" />
+    </editor>
+
+    <!-- Scene Selector -->
+    <editor id="HSCNSEL">
+        <range uom="25" subset="0-30" nls="HUE_SCENE" />
+    </editor>
+
 </editors>

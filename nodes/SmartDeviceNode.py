@@ -6,6 +6,7 @@
 import re
 import polyinterface
 from pyHS100 import SmartDeviceException
+from converters import bri2st,st2bri
 
 LOGGER = polyinterface.LOGGER
 
@@ -108,7 +109,11 @@ class SmartDeviceNode(polyinterface.Node):
         if self.dev is not None:
             try:
                 if (self.dev.state == 'ON'):
-                    self.setDriver('ST',100)
+                    if self.dev.is_dimmable:
+                        self.setDriver('ST',self.dev.brightness)
+                        self.setDriver('GV5',int(st2bri(self.dev.brightness)))
+                    else:
+                        self.setDriver('ST',100)
                 else:
                     self.setDriver('ST',0)
                 if not self.connected:
@@ -149,11 +154,6 @@ class SmartDeviceNode(polyinterface.Node):
             except:
                 self.l_error('set_connected','failed', exc_info=True)
 
-    def set_bri(self,val):
-        if self.connected:
-            self.dev.brightness = val
-            self.setDriver('GV1',self.dev.brightness)
-
     def is_connected(self):
         return self.connected
 
@@ -179,8 +179,3 @@ class SmartDeviceNode(polyinterface.Node):
 
     def cmd_set_off(self, command):
         self.set_off()
-
-    def cmd_set_bri(self,command):
-        val = int(command.get('value'))
-        self.l_info("cmd_set_bri",val)
-        self.set_bri(val)

@@ -26,7 +26,7 @@ class Controller(polyinterface.Controller):
         LOGGER.info('Starting {}'.format(self.name))
         self.setDriver('ST', 1)
         self.server_data = self.poly.get_server_data(check_profile=True)
-        LOGGER.info('Version {}'.format(self.server_data['version']))
+        LOGGER.info('{} Version {}'.format(self.name,self.server_data['version']))
         self.heartbeat()
         self.check_params()
         self.discover()

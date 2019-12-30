@@ -83,6 +83,8 @@ def color_xy(c_id):
 def bri2st(bri):
     return int(bri / 254. * 100.)
 
+def st2bri(st):
+    return round(st / 100. * 254., 4)
 
 def kel2mired(value):
     if value != 0:

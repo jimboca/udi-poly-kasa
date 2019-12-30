@@ -80,3 +80,96 @@ ST-spe-CPW-NAME = Current Power Used
 ST-spe-TPW-NAME = Total Power Used
 
 CMD-BRI-NAME = Brightness
+
+ST-GV1-NAME = X
+ST-GV2-NAME = Y
+ST-GV3-NAME = Hue
+ST-GV4-NAME = Saturation
+ST-GV5-NAME = Brightness
+ST-sb-GV6-NAME = Reachable
+ST-HGR-GV6-NAME = Number of Lights
+ST-ST-NAME = Status
+ST-RR-NAME = Transition time
+ST-CLITEMP-NAME = Color Temperature
+
+
+CMD-DON-NAME = On
+CMD-DOF-NAME = Off
+CMD-DFON-NAME = Fast On
+CMD-DFOF-NAME = Fast Off
+CMD-BRT-NAME = Brighten
+CMD-DIM-NAME = Dim
+CMD-FDUP-NAME = Fade Up
+CMD-FDDOWN-NAME = Fade Down
+CMD-FDSTOP-NAME = Fade Stop
+CMD-SET_COLOR_RGB-NAME = Set RGB Color
+CMD-SET_COLOR_XY-NAME = Set XY Color
+CMD-SET_CTBR-NAME = Set Temp and Brightness
+CMD-SET_HUE-NAME = Set Hue
+CMD-QUERY-NAME = Query
+CMD-SET_SAT-NAME = Set Saturation
+CMD-SET_BRI-NAME = Set Brightness
+CMD-CLITEMP-NAME = Set Color Temperature
+CMD-RR-NAME = Set Transition Time
+CMD-SET_HSB-NAME = Set HSB Color
+CMD-SET_COLOR-NAME = Set Color
+CMD-SET_ALERT-NAME = Set Alert
+CMD-SET_EFFECT-NAME = Set Effect
+CMD-SET_HSCENE-NAME = Set Hue Scene
+
+CMDP-HCLRGB-R-NAME = Red
+CMDP-HCLRGB-G-NAME = Green
+CMDP-HCLRGB-B-NAME = Blue
+CMDP-HCLXY-X-NAME = X
+CMDP-HCLXY-Y-NAME = Y
+
+COLORS_HCSEL-1 = Aqua
+COLORS_HCSEL-2 = Azure
+COLORS_HCSEL-3 = Beige
+COLORS_HCSEL-4 = Blue
+COLORS_HCSEL-5 = Chartreuse
+COLORS_HCSEL-6 = Coral
+COLORS_HCSEL-7 = Crimson
+COLORS_HCSEL-8 = Forest Green
+COLORS_HCSEL-9 = Fuchsia
+COLORS_HCSEL-10 = Golden
+COLORS_HCSEL-11 = Gray
+COLORS_HCSEL-12 = Green
+COLORS_HCSEL-13 = Hot Pink
+COLORS_HCSEL-14 = Indigo
+COLORS_HCSEL-15 = Lavender
+COLORS_HCSEL-16 = Lime
+COLORS_HCSEL-17 = Maroon
+COLORS_HCSEL-18 = Navy Blue
+COLORS_HCSEL-19 = Olive
+COLORS_HCSEL-20 = Red
+COLORS_HCSEL-21 = Royal Blue
+COLORS_HCSEL-22 = Tan
+COLORS_HCSEL-23 = Teal
+COLORS_HCSEL-24 = White
+
+ALERTS_HASEL-1 = None
+ALERTS_HASEL-2 = Breathe
+ALERTS_HASEL-3 = Long Breathe
+
+EFFECTS_HESEL-1 = None
+EFFECTS_HESEL-2 = Colorloop
+
+#Generic for all Types
+CMDP-H-NAME = Hue
+CMDP-S-NAME = Saturation
+CMDP-BR-NAME = Brightness
+CMDP-K-NAME = Color Temperature
+CMDP-D-NAME = Transition Time
+
+# PGM-CMD-SET_COLOR_RGB-FMT = /R// Red ${v}/ /G// Green ${v}/ /B// Blue ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
+PGM-CMD-SET_COLOR_RGB-FMT = /R// Red ${v}/ /G// Green ${v}/ /B// Blue ${v}/ /BR// Brightness ${v}/
+
+# PGM-CMD-SET_COLOR_XY-FMT = /X// X ${v}/ /Y// Y ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
+PGM-CMD-SET_COLOR_XY-FMT = /X// X ${v}/ /Y// Y ${v}/ /BR// Brightness ${v}/
+
+# PGM-CMD-SET_HSB-FMT = /H// Hue ${v}/ /S// Saturation ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
+PGM-CMD-SET_HSB-FMT = /H// Hue ${v}/ /S// Saturation ${v}/ /BR// Brightness ${v}/
+
+# PGM-CMD-SET_CTBR-FMT =  /K// Color Temperature ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
+PGM-CMD-SET_CTBR-FMT =  /K// Color Temperature ${v}/ /BR// Brightness ${v}/
