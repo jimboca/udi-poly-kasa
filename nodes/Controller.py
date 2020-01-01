@@ -56,9 +56,9 @@ class Controller(polyinterface.Controller):
                         all_connected = False
                 except:
                     pass # in case node doesn't have a longPoll method
-        if not all_connected:
-            self.l_info("longPoll", "Not all devices are connected, so running discover to check for them")
-            self.discover_new()
+        #if not all_connected:
+        #    self.l_info("longPoll", "Not all devices are connected, so running discover to check for them")
+        #    self.discover_new()
 
     def query(self):
         self.setDriver('ST', 1)

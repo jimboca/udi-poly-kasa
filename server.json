@@ -13,7 +13,7 @@
         {
             "title": "Kasa: a NodeServer for TP-Link Kasa Integration",
             "author": "JimBoCA",
-            "version": "2.2.4",
+            "version": "2.2.5",
             "date": "March 27, 2018",
             "source": "https://github.com/jimboca/udi-poly-kasa",
             "license": "https://github.com/jimboca/udi-poly-kasa/master/LICENSE"

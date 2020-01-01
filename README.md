@@ -111,7 +111,9 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
-- 2.2.4: 12/29/2019
+- 2.2.5: 12/31/2019
+  - Moved main short/long poll into threads so main thread is more responsive
+- 2.2.4: 12/30/2019
   - KL110 and KL120 can be added to scenes, but still more functions to implement
 - 2.2.3: 12/27/2019
   - Add support for KL120 (Dimmable Color Temperature with Energy)

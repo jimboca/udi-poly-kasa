@@ -7,6 +7,7 @@ import re
 import polyinterface
 from pyHS100 import SmartDeviceException
 from converters import bri2st,st2bri
+from threading import Thread,Event
 
 LOGGER = polyinterface.LOGGER
 
@@ -22,6 +23,7 @@ class SmartDeviceNode(polyinterface.Node):
         self.host = cfg['host']
         self.debug_level = 0
         self.st = None
+        self.event  = None
         self.connected = None # So start will force setting proper status
         self.l_debug('__init__','controller={} address={} name={} host={}'.format(controller,address,name,self.host))
         if cfg['emeter']:
@@ -33,22 +35,62 @@ class SmartDeviceNode(polyinterface.Node):
         super().__init__(controller, parent_address, address, name)
 
     def start(self):
+        self.l_debug('start','Setting up Threads')
+        self.short_event = Event()
+        self.short_thread = Thread(target=self._shortPoll)
+        self.short_thread.daemon = True
+        self.long_event = Event()
+        self.long_thread = Thread(target=self._longPoll)
+        self.long_thread.daemon = True
+        self.l_debug('start','Starting Threads')
+        st = self.short_thread.start()
+        self.l_debug('start','Short Thread start st={}'.format(st))
+        st = self.long_thread.start()
+        self.l_debug('start','Long Thread start st={}'.format(st))
+
+    def shortPoll(self):
+        # Tells the thread to finish
+        self.l_debug('shortPoll','thread={} event={}'.format(self.short_thread,self.short_event))
+        if self.short_event is not None:
+            self.l_debug('shortPoll','calling event.set')
+            self.short_event.set()
+        else:
+            self.l_error('shortPoll','event is gone? thread={} event={}'.format(self.short_thread,self.short_event))
+
+    def _shortPoll(self):
         if self.dev is not None:
             self.set_connected(True)
         else:
             self.set_connected(False)
         self.connect()
         self.set_state()
-
-    def shortPoll(self):
-        self.set_state()
+        while (True):
+            self.l_debug('_shortPoll','waiting...')
+            self.short_event.wait()
+            self.l_debug('_shortPoll','running...')
+            self.set_state()
+            self.short_event.clear()
 
     def longPoll(self):
-        if not self.connected:
-            self.l_info('longPoll', 'Not connected, will retry...')
-            self.connect()
-        if self.connected:
-            self.set_energy()
+        # Tells the thread to finish
+        self.l_debug('longPoll','thread={} event={}'.format(self.long_thread,self.long_event))
+        if self.long_event is not None:
+            self.l_debug('longPoll','calling event.set')
+            self.long_event.set()
+        else:
+            self.l_error('longPoll','event is gone? thread={} event={}'.format(self.long_thread,self.long_event))
+
+    def _longPoll(self):
+        while (True):
+            self.l_debug('_shortPoll','waiting...')
+            self.short_event.wait()
+            self.l_debug('_shortPoll','running...')
+            if not self.connected:
+                self.l_info('longPoll', 'Not connected, will retry...')
+                self.connect()
+            if self.connected:
+                self.set_energy()
+            self.short_event.clear()
 
     def set_energy(self):
         if self.cfg['emeter']:
