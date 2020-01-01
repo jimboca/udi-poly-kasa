@@ -82,15 +82,15 @@ class SmartDeviceNode(polyinterface.Node):
 
     def _longPoll(self):
         while (True):
-            self.l_debug('_shortPoll','waiting...')
-            self.short_event.wait()
-            self.l_debug('_shortPoll','running...')
+            self.l_debug('_long','waiting...')
+            self.long_event.wait()
+            self.l_debug('_longPoll','running...')
             if not self.connected:
                 self.l_info('longPoll', 'Not connected, will retry...')
                 self.connect()
             if self.connected:
                 self.set_energy()
-            self.short_event.clear()
+            self.long_event.clear()
 
     def set_energy(self):
         if self.cfg['emeter']:
