@@ -21,6 +21,10 @@ class Controller(polyinterface.Controller):
         self.hb = 0
         self.nodes_by_mac = {}
         self.discover_done = False
+        # For the short/long poll threads, we run them in threads so the main
+        # process is always available for controlling devices
+        self.short_event = False
+        self.long_event  = False
 
     def start(self):
         LOGGER.info('Starting {}'.format(self.name))
@@ -35,30 +39,67 @@ class Controller(polyinterface.Controller):
         if not self.discover_done:
             self.l_info('shortPoll','waiting for discover to complete')
             return
-        for node in self.nodes:
-            self.l_debug('shortPoll', 'node={} node.address={} self.address={}'.format(node,self.nodes[node].address,self.address),level=1)
-            if self.nodes[node].address != self.address:
-                self.nodes[node].shortPoll()
+        if self.short_event is False:
+            self.l_debug('shortPoll','Setting up Thread')
+            self.short_event = Event()
+            self.short_thread = Thread(target=self._shortPoll)
+            self.short_thread.daemon = True
+            self.l_debug('shortPoll','Starting Thread')
+            st = self.short_thread.start()
+            self.l_debug('shortPoll','Thread start st={}'.format(st))
+        # Tell the thread to run
+        self.l_debug('shortPoll','thread={} event={}'.format(self.short_thread,self.short_event))
+        if self.short_event is not None:
+            self.l_debug('shortPoll','calling event.set')
+            self.short_event.set()
+        else:
+            self.l_error('shortPoll','event is gone? thread={} event={}'.format(self.short_thread,self.short_event))
+
+    def _shortPoll(self)
+        while (True):
+            self.l_debug('_shortPoll','waiting...')
+            self.short_event.wait()
+            self.l_debug('_shortPoll','running...')
+            for node in self.nodes:
+                self.l_debug('shortPoll', 'node={} node.address={} self.address={}'.format(node,self.nodes[node].address,self.address),level=1)
+                if self.nodes[node].address != self.address:
+                    self.nodes[node].shortPoll()
+            self.short_event.clear()
 
     def longPoll(self):
         self.heartbeat()
         if not self.discover_done:
             self.l_info('longPoll','waiting for discover to complete')
             return
-        all_connected = True
-        for node in self.nodes:
-            if self.nodes[node].address != self.address:
-                try:
-                    if self.nodes[node].is_connected():
-                        self.nodes[node].longPoll()
-                    else:
-                        self.l_info('longPoll',"Previously known device not responding {} '{}'".format(self.nodes[node].address,self.nodes[node].name))
-                        all_connected = False
-                except:
-                    pass # in case node doesn't have a longPoll method
-        #if not all_connected:
-        #    self.l_info("longPoll", "Not all devices are connected, so running discover to check for them")
-        #    self.discover_new()
+        if self.long_event is False:
+            self.l_debug('longPoll','Setting up Thread')
+            self.long_event = Event()
+            self.long_thread = Thread(target=self._longPoll)
+            self.long_thread.daemon = True
+            self.l_debug('longPoll','Starting Thread')
+            st = self.long_thread.start()
+            self.l_debug('longPoll','Thread start st={}'.format(st))
+
+    def _longPoll(self):
+        while (True):
+            self.l_debug('_shortPoll','waiting...')
+            self.short_event.wait()
+            self.l_debug('_shortPoll','running...')
+            all_connected = True
+            for node in self.nodes:
+                if self.nodes[node].address != self.address:
+                    try:
+                        if self.nodes[node].is_connected():
+                            self.nodes[node].longPoll()
+                        else:
+                            self.l_info('longPoll',"Previously known device not responding {} '{}'".format(self.nodes[node].address,self.nodes[node].name))
+                            all_connected = False
+                    except:
+                        pass # in case node doesn't have a longPoll method
+            if not all_connected:
+                self.l_info("longPoll", "Not all devices are connected, so running discover to check for them")
+                self.discover_new()
+            self.short_event.clear()
 
     def query(self):
         self.setDriver('ST', 1)
