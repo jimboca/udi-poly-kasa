@@ -55,7 +55,7 @@ class Controller(polyinterface.Controller):
         else:
             self.l_error('shortPoll','event is gone? thread={} event={}'.format(self.short_thread,self.short_event))
 
-    def _shortPoll(self)
+    def _shortPoll(self):
         while (True):
             self.l_debug('_shortPoll','waiting...')
             self.short_event.wait()
