@@ -141,8 +141,6 @@ class Controller(polyinterface.Controller):
     def discover_new(self):
         self.l_info('discover_new','start')
         for dev in Discover.discover(target=self.poly.network_interface['broadcast']).values():
-            self.l_debug('discover_new',"Got Device\n\tAlias:{}\n\tModel:{}\n\tMac:{}\n\tHost:{}".
-                    format(dev.alias,dev.model,dev.mac,dev.host))
             # Known Device?
             smac = self.smac(dev.mac)
             if smac in self.nodes_by_mac:
