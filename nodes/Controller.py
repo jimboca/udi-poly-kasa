@@ -43,7 +43,7 @@ class Controller(polyinterface.Controller):
         if self.short_event is False:
             self.l_debug('shortPoll','Setting up Thread')
             self.short_event = Event()
-            self.short_thread = Thread(target=self._shortPoll)
+            self.short_thread = Thread(name='shortPoll',target=self._shortPoll)
             self.short_thread.daemon = True
             self.l_debug('shortPoll','Starting Thread')
             st = self.short_thread.start()
@@ -75,7 +75,7 @@ class Controller(polyinterface.Controller):
         if self.long_event is False:
             self.l_debug('longPoll','Setting up Thread')
             self.long_event = Event()
-            self.long_thread = Thread(target=self._longPoll)
+            self.long_thread = Thread(name='longPoll',target=self._longPoll)
             self.long_thread.daemon = True
             self.l_debug('longPoll','Starting Thread')
             st = self.long_thread.start()
