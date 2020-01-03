@@ -1,6 +1,7 @@
 
 import polyinterface
 import logging,re,json,sys
+from threading import Thread,Event
 from node_funcs import get_valid_node_name
 sys.path.insert(0,"pyHS100")
 from pyHS100 import Discover

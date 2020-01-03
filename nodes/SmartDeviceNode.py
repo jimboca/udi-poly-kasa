@@ -7,7 +7,6 @@ import re
 import polyinterface
 from pyHS100 import SmartDeviceException
 from converters import bri2st,st2bri
-from threading import Thread,Event
 
 LOGGER = polyinterface.LOGGER
 
