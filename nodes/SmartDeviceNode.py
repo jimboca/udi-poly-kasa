@@ -36,7 +36,7 @@ class SmartDeviceNode(polyinterface.Node):
     def start(self):
         pass
 
-    def _shortPoll(self):
+    def shortPoll(self):
         if self.dev is not None:
             self.set_connected(True)
         else:
