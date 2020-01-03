@@ -37,10 +37,7 @@ class SmartDeviceNode(polyinterface.Node):
         pass
 
     def shortPoll(self):
-        if self.dev is not None:
-            self.set_connected(True)
-        else:
-            self.set_connected(False)
+        # Keep trying to connect if possible
         self.connect()
         self.set_state()
 
@@ -92,7 +89,7 @@ class SmartDeviceNode(polyinterface.Node):
             except:
                 self.l_error("start", "Unknown excption connecting to device '{}' {} will try again later".format(self.name,self.host), exc_info=True)
                 self.set_connected(False)
-        return self.connected
+        return self.is_connected
 
     def set_on(self):
         self.dev.turn_on()
@@ -149,11 +146,11 @@ class SmartDeviceNode(polyinterface.Node):
             # Make sure current cfg is saved
             self.l_debug('set_connected', "save_cfg".format(st), level=0, exc_info=False)
             try:
-                self.cfg['host'] = self.dev.host
+                self.cfg['host']  = self.dev.host
                 self.cfg['model'] = self.dev.model
                 self.controller.save_cfg(self.cfg)
             except SmartDeviceException as ex:
-                self.l_error('set_connected','failed: {}'.format(ex))
+                self.l_error('set_connected','cfailed: {}'.format(ex))
             except:
                 self.l_error('set_connected','unknown failure', exc_info=True)
 
