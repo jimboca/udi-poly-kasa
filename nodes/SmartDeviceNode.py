@@ -152,8 +152,10 @@ class SmartDeviceNode(polyinterface.Node):
                 self.cfg['host'] = self.dev.host
                 self.cfg['model'] = self.dev.model
                 self.controller.save_cfg(self.cfg)
+            except SmartDeviceException as ex:
+                self.l_error('set_connected','failed: {}'.format(ex))
             except:
-                self.l_error('set_connected','failed', exc_info=True)
+                self.l_error('set_connected','unknown failure', exc_info=True)
 
     def is_connected(self):
         return self.connected
