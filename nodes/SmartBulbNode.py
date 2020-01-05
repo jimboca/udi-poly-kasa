@@ -101,10 +101,17 @@ class SmartBulbNode(SmartDeviceNode):
         if not self.dev.is_variable_color_temp:
             self.l_error('cmd_set_color_temp_brightnesss','Not supported on this device?')
             return False
-        self.set_on()
+        #cstate = self.dev.get_light_state()
         query = command.get('query')
-        self.set_bri(query.get('BR.uom100'))
-        self.set_color_temp (query.get('K.uom26'))
+        #self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(cstate))
+        light_state = {
+            "on_off": 1,
+            "brightness": bri2st(int(query.get('BR.uom100'))),
+            "color_temp": int(query.get('K.uom26')),
+        }
+        self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(light_state))
+        self.dev.set_light_state(light_state)
+
 
     def setColorRGB(self, command):
         if 'xy' not in self.data['action']:
