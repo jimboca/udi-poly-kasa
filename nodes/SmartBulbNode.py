@@ -6,7 +6,7 @@
 import polyinterface
 from pyHS100 import SmartBulb
 from nodes import SmartDeviceNode
-from converters import RGB_2_xy, color_xy, bri2st, kel2mired
+from converters import color_hsv, color_rgb, bri2st, st2bri
 
 LOGGER = polyinterface.LOGGER
 
@@ -52,15 +52,17 @@ class SmartBulbNode(SmartDeviceNode):
         super().__init__(controller, controller.address, address, name, dev, cfg)
 
     def set_all_drivers(self):
+        if self.dev.is_color:
+            hsv = self.dev.hsv
+            self.setDriver('GV3',hsv[0])
+            self.setDriver('GV4',st2bri(hsv[1]))
+            self.setDriver('GV5',st2bri(hsv[2]))
         if self.dev.is_variable_color_temp:
             self.setDriver('CLITEMP',self.dev.color_temp)
-        #is_variable_color_temp
-        #if self.is_color:
-        pass
 
     def set_bri(self,val):
         self.l_debug('set_bri','connected={} val={}'.format(self.connected,val))
-        if self.connected:
+        if self.is_connected():
             self.brightness = int(val)
             self.l_debug('set_bri','{}'.format(val))
             self.setDriver('GV5',self.brightness)
@@ -68,11 +70,38 @@ class SmartBulbNode(SmartDeviceNode):
             self.dev.brightness = int(bri2st(self.brightness))
             self.setDriver('ST',self.dev.brightness)
 
+    def set_hue(self,val):
+        self.l_debug('set_hue','connected={} val={}'.format(self.connected,val))
+        if self.is_connected():
+            hsv = list(self.dev.hsv)
+            self.l_debug('set_hsv','{}'.format(val))
+            hsv[0] = val
+            self.dev.hsv = hsv
+            self.setDriver('GV3',val)
+            self.set_state()
+
+    def set_sat(self,val):
+        self.l_debug('set_sat','connected={} val={}'.format(self.connected,val))
+        if self.is_connected():
+            hsv = list(self.dev.hsv)
+            self.l_debug('set_sat','{}'.format(val))
+            hsv[1] = bri2st(val)
+            self.dev.hsv = hsv
+            self.setDriver('GV4',st2bri(val))
+            self.set_state()
+
     def set_color_temp(self,val):
         self.l_debug('set_color_temp','connected={} val={}'.format(self.connected,val))
-        if self.connected:
+        if self.is_connected():
             self.dev.color_temp = int(val)
             self.setDriver('CLITEMP',self.dev.color_temp)
+
+    def set_color_name(self,val):
+        self.l_debug('set_color_name','connected={} val={}'.format(self.connected,val))
+        if self.is_connected():
+            self.l_debug('set_color_name','rgb={}'.format(color_rgb(val)))
+            self.dev.hsv = color_hsv(val)
+            self.set_state()
 
     def newdev(self):
         return SmartBulb(self.host)
@@ -87,6 +116,16 @@ class SmartBulbNode(SmartDeviceNode):
         val = int(command.get('value'))
         self.l_info("cmd_set_bri",val)
         self.set_bri(val)
+
+    def cmd_set_sat(self,command):
+        val = int(command.get('value'))
+        self.l_info("cmd_set_sat",val)
+        self.set_sat(val)
+
+    def cmd_set_hue(self,command):
+        val = int(command.get('value'))
+        self.l_info("cmd_set_hue",val)
+        self.set_hue(val)
 
     def cmd_set_color_temp(self,command):
         if not self.dev.is_variable_color_temp:
@@ -112,48 +151,18 @@ class SmartBulbNode(SmartDeviceNode):
         self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(light_state))
         self.dev.set_light_state(light_state)
 
-
-    def setColorRGB(self, command):
-        if 'xy' not in self.data['action']:
-            LOGGER.info("{} {} does not have Color lights but RGB command is received".format(self.data['type'], self.data['name']))
-            return False
-        super().setColorRGB(command)
-
-    def setColorXY(self, command):
-        if 'xy' not in self.data['action']:
-            LOGGER.info("{} {} does not have Color lights but XY command is received".format(self.data['type'], self.data['name']))
-            return False
-        super().setColorXY(command)
-
-    def setColor(self, command):
-        if 'xy' not in self.data['action']:
-            LOGGER.info("{} {} does not have Color lights but Color command is received".format(self.data['type'], self.data['name']))
-            return False
-        super().setColor(command)
-
-    def setHue(self, command):
-        if 'hue' not in self.data['action']:
-            LOGGER.info("{} {} does not have Color lights but HUE command is received".format(self.data['type'], self.data['name']))
-            return False
-        super().setHue(command)
-
-    def setSat(self, command):
-        if 'sat' not in self.data['action']:
-            LOGGER.info("{} {} does not have Color lights but SAT command is received".format(self.data['type'], self.data['name']))
-            return False
-        super().setSat(command)
-
-    def setColorHSB(self, command):
-        if 'hue' not in self.data['action']:
-            LOGGER.info("{} {} does not have Color lights but HSB command is received".format(self.data['type'], self.data['name']))
-            return False
-        super().setColorHSB(command)
-
+    def cmd_set_color_name(self,command):
+        if not self.dev.is_color:
+            self.l_error('cmd_set_color_name','Not supported on this device')
+        self.set_color_name(command.get('value'))
 
     commands = {
         'DON': cmd_set_on,
         'DOF': cmd_set_off,
         'SET_BRI': cmd_set_bri,
+        'SET_HUE': cmd_set_hue,
+        'SET_SAT': cmd_set_sat,
         'CLITEMP' : cmd_set_color_temp,
         'SET_CTBR' : cmd_set_color_temp_brightness,
+        'SET_COLOR' : cmd_set_color_name,
     }

@@ -4,7 +4,8 @@
     <nodeDef id="KasaController" nls="ctl">
         <editors />
         <sts>
-	         <st id="ST" editor="bool" />
+          <st id="ST" editor="bool" />
+          <st id="GV1" editor="I_DEBUG" />
 	      </sts>
         <cmds>
             <sends>
@@ -12,7 +13,7 @@
               <cmd id="DOF" />
             </sends>
             <accepts>
-              <cmd id="DEBUG">
+              <cmd id="SET_DM">
                 <p id="" editor="I_DEBUG" init="GV1" />
               </cmd>
               <cmd id="QUERY" />
@@ -150,10 +151,9 @@
       <sts>
           <st id="ST" editor="onoff" />
           <st id="GV0" editor="bool" />
+          <st id="GV2" editor="hue" /> <!-- Hue -->
+          <st id="GV3" editor="sat" /> <!-- Saturation -->
           <st id="GV1" editor="bri" /> <!-- Brightness -->
-          <st id="GV2" editor="ctemp" /> <!-- Color Temperature -->
-          <st id="GV3" editor="hue" /> <!-- Hue -->
-          <st id="GV4" editor="sat" /> <!-- Saturation -->
       </sts>
       <cmds>
           <sends />
@@ -166,45 +166,19 @@
           </accepts>
       </cmds>
   </nodeDef>
-
-  <!-- Bulb - Dimmable, Full Color -->
-  <nodeDef id="SmartBulb_DTCE_old" nls="sb">
-      <editors />
-      <sts>
-          <st id="ST" editor="onoff" />
-          <st id="GV0" editor="bool" />
-          <st id="GV1" editor="bri" /> <!-- Brightness -->
-          <st id="GV2" editor="ctemp" /> <!-- Color Temperature -->
-          <st id="GV3" editor="hue" /> <!-- Hue -->
-          <st id="GV4" editor="sat" /> <!-- Saturation -->
-          <st id="CPW" editor="watts" />   <!-- Driver=Current Power Used = energy['power_mw'] -->
-      </sts>
-      <cmds>
-          <sends />
-          <accepts>
-            <cmd id="BRI">
-              <p id="" editor="bri" init="GV1" />
-            </cmd>
-            <cmd id="DON" />
-            <cmd id="DOF" />
-          </accepts>
-      </cmds>
-  </nodeDef>
-
 
   <!-- Extended Color Light -->
   <nodeDef id="SmartBulb_DTCE" nls="sb">
       <editors />
       <sts>
-          <st id="ST" editor="HCLST" />
-          <st id="GV0" editor="bool" />
-          <st id="CLITEMP" editor="HKELVIN" />
-          <!--<st id="RR" editor="HDURATION" />-->
-          <st id="GV1" editor="HCLXY" />  <!-- Color X -->
-          <st id="GV2" editor="HCLXY" />  <!-- Color Y -->
-          <st id="GV3" editor="HCLHUE" /> <!-- Hue -->
-          <st id="GV4" editor="HCLSAT" /> <!-- Saturation -->
-          <st id="GV5" editor="HCLBRI" /> <!-- Brightness -->
+        <st id="ST" editor="HCLST" />          <!-- Bulb Status, current brightnes level 0-100 -->
+        <st id="GV0" editor="bool" />          <!-- Responding -->
+        <st id="CLITEMP" editor="HKELVIN" />   <!-- Color Temperature -->
+        <!-- <st id="RR" editor="HDURATION" /> -->
+        <st id="GV3" editor="HCLHUE" /> <!-- Hue -->
+        <st id="GV4" editor="HCLSAT" /> <!-- Saturation -->
+        <st id="GV5" editor="HCLBRI" />        <!-- Brightness 1-254 -->
+        <st id="CPW" editor="watts" />   <!-- Driver=Current Power Used = energy['power_mw'] -->
       </sts>
       <cmds>
           <sends>

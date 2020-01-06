@@ -7,11 +7,14 @@ by JimBo jimboca3@gmail.com
 import polyinterface
 import sys
 import time
+import warnings
 from nodes import Controller
 
 LOGGER = polyinterface.LOGGER
 
 if __name__ == "__main__":
+    # Some are getting unclosed socket warnings due to garbage collection?? no idea why, so just ignore them since we dont' care
+    warnings.filterwarnings("ignore", category=ResourceWarning, message="unclosed.*<socket.socket.*>")
     try:
         polyglot = polyinterface.Interface('Kasa')
         """

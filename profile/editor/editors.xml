@@ -60,7 +60,7 @@
 
     <!-- Color Selector -->
     <editor id="HCSEL">
-        <range uom="25" subset="1-24" nls="COLORS_HCSEL" />
+        <range uom="25" subset="0-23" nls="COLORS_HCSEL" />
     </editor>
 
     <!-- Alert Selector -->
@@ -75,15 +75,15 @@
 
     <!-- Hue Editor -->
     <editor id="HCLHUE">
-        <range uom="56" min="0" max="65535" prec="0" step="1" />
+        <range uom="100" min="0" max="360" prec="0" step="1" />
     </editor>
 
-    <!-- Saturation Editor -->
+    <!-- Saturation Editor Kasa is 0-100 We use 0-255 -->
     <editor id="HCLSAT">
         <range uom="100" min="0" max="254" prec="0" step="1" />
     </editor>
 
-    <!-- Brightness Editor -->
+    <!-- Brightness Editor Kasa is 0-100 but we use 0-254-->
     <editor id="HCLBRI">
         <range uom="100" min="1" max="254" prec="0" step="1" />
     </editor>

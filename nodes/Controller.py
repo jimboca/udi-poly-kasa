@@ -32,6 +32,7 @@ class Controller(polyinterface.Controller):
         self.setDriver('ST', 1)
         self.server_data = self.poly.get_server_data(check_profile=True)
         LOGGER.info('{} Version {}'.format(self.name,self.server_data['version']))
+        self.set_debug_level(self.getDriver('GV1'))
         self.heartbeat()
         self.check_params()
         self.discover()
@@ -49,23 +50,23 @@ class Controller(polyinterface.Controller):
             st = self.short_thread.start()
             self.l_debug('shortPoll','Thread start st={}'.format(st))
         # Tell the thread to run
-        self.l_debug('shortPoll','thread={} event={}'.format(self.short_thread,self.short_event))
+        self.l_debug('shortPoll','thread={} event={}'.format(self.short_thread,self.short_event),level=1)
         if self.short_event is not None:
-            self.l_debug('shortPoll','calling event.set')
+            self.l_debug('shortPoll','calling event.set',level=1)
             self.short_event.set()
         else:
             self.l_error('shortPoll','event is gone? thread={} event={}'.format(self.short_thread,self.short_event))
 
     def _shortPoll(self):
         while (True):
-            self.l_debug('_shortPoll','waiting...')
             self.short_event.wait()
-            self.l_debug('_shortPoll','running...')
+            self.l_debug('_shortPoll','start')
             for node in self.nodes:
                 self.l_debug('shortPoll', 'node={} node.address={} self.address={}'.format(node,self.nodes[node].address,self.address),level=1)
                 if self.nodes[node].address != self.address:
                     self.nodes[node].shortPoll()
             self.short_event.clear()
+            self.l_debug('_shortPoll','done')
 
     def longPoll(self):
         self.heartbeat()
@@ -83,9 +84,8 @@ class Controller(polyinterface.Controller):
 
     def _longPoll(self):
         while (True):
-            self.l_debug('_shortPoll','waiting...')
             self.short_event.wait()
-            self.l_debug('_shortPoll','running...')
+            self.l_debug('_shortPoll','start')
             all_connected = True
             for node in self.nodes:
                 if self.nodes[node].address != self.address:
@@ -93,14 +93,15 @@ class Controller(polyinterface.Controller):
                         if self.nodes[node].is_connected():
                             self.nodes[node].longPoll()
                         else:
-                            self.l_info('longPoll',"Previously known device not responding {} '{}'".format(self.nodes[node].address,self.nodes[node].name))
+                            self.l_info('longPoll',"Known device not responding {} '{}'".format(self.nodes[node].address,self.nodes[node].name))
                             all_connected = False
                     except:
                         pass # in case node doesn't have a longPoll method
             if not all_connected:
-                self.l_info("longPoll", "Not all devices are connected, so running discover to check for them")
+                self.l_info("longPoll", "Not all devices are connected, running discover to check for them")
                 self.discover_new()
             self.short_event.clear()
+            self.l_debug('_shortPoll','done')
 
     def query(self):
         self.setDriver('ST', 1)
@@ -217,6 +218,34 @@ class Controller(polyinterface.Controller):
             return None
         return cfgd
 
+    def set_all_logs(self,level):
+        LOGGER.setLevel(level)
+        # TODO: Set Kasa query logger level
+        #logging.getLogger('requests').setLevel(level)
+
+    def set_debug_level(self,level):
+        self.l_info('set_debug_level',level)
+        if level is None:
+            level = 20
+        level = int(level)
+        if level == 0:
+            level = 20
+        self.l_info('set_debug_level','Set GV1 to {}'.format(level))
+        self.setDriver('GV1', level)
+        # 0=All 10=Debug are the same because 0 (NOTSET) doesn't show everything.
+        if level == 10:
+            self.set_all_logs(logging.DEBUG)
+        elif level == 20:
+            self.set_all_logs(logging.INFO)
+        elif level == 30:
+            self.set_all_logs(logging.WARNING)
+        elif level == 40:
+            self.set_all_logs(logging.ERROR)
+        elif level == 50:
+            self.set_all_logs(logging.CRITICAL)
+        else:
+            self.l_error("set_debug_level","Unknown level {}".format(level))
+
     def delete(self):
         LOGGER.info('Oh God I\'m being deleted. Nooooooooooooooooooooooooooooooooooooooooo.')
 
@@ -230,6 +259,11 @@ class Controller(polyinterface.Controller):
         self.l_info('update_profile','start')
         st = self.poly.installprofile()
         return st
+
+    def cmd_set_debug_mode(self,command):
+        val = int(command.get('value'))
+        self.l_info("cmd_set_debug_mode",val)
+        self.set_debug_level(val)
 
     def _cmd_update_profile(self,command):
         self.update_profile()
@@ -252,11 +286,12 @@ class Controller(polyinterface.Controller):
 
     id = 'KasaController'
     commands = {
+      'SET_DM': cmd_set_debug_mode,
       'QUERY': query,
       'DISCOVER': _cmd_discover,
       'UPDATE_PROFILE': _cmd_update_profile,
     }
     drivers = [
-    {
-      'driver': 'ST', 'value': 1, 'uom': 2
-    }]
+        {'driver': 'ST',  'value':  1, 'uom':  2} ,
+        {'driver': 'GV1', 'value': 30, 'uom': 25}, # Debug (Log) Mode, default=30 Warning
+    ]

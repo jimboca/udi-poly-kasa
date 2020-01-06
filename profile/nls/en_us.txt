@@ -4,7 +4,9 @@ ND-KasaController-ICON = GenericCtl
 CMD-ctl-QUERY"-NAME = Query
 CMD-ctl-DISCOVER-NAME = Discover
 CMD-ctl-UPDATE_PROFILE-NAME = Update Profile
+CMD-ctl-SET_DM-NAME = Set Logger Level
 ST-ctl-ST-NAME = NodeServer Online
+ST-ctl-GV1-NAME = Logger Level
 
 ND-UnknownPlugModel-NAME = Unknown Plug Model
 ND-UnknownPlugModel-ICON = GenericCtl
@@ -21,14 +23,16 @@ CDM-30 = Warning
 CDM-40 = Error
 CDM-50 = Critical
 
+# All Devices
+ST-ST-NAME = Status
+ST-GV0-NAME = Connected
+
+# Smart Strip
 ND-SmartStrip-NAME = Smart Strip
 ND-SmartStrip-ICON = GenericCtl
-ST-ss-ST-NAME = Strip Status
-ST-ss-GV0-NAME = Connected
 
 ND-SmartStripPlug-NAME = Smart Strip Plug
 ND-SmartStripPlug-ICON = GenericCtl
-ST-ssp-ST-NAME = Plug Status
 
 # SmartPlugs
 ND-SmartPlug_NN-NAME = SmartPlug
@@ -40,16 +44,10 @@ ND-SmartPlug_NE-ICON = GenericCtl
 ND-SmartPlug_DN-ICON = GenericCtl
 ND-SmartPlug_DE-ICON = GenericCtl
 
-ST-sp-ST-NAME = Plug Status
-ST-spe-ST-NAME = Plug Status
-
 ST-spe-CC-NAME = Current
 ST-spe-CV-NAME = Voltage
 ST-spe-CPW-NAME = Current Power Used
 ST-spe-TPW-NAME = Total Power Used
-
-ST-sp-GV0-NAME = Connected
-ST-spe-GV0-NAME = Connected
 
 # SmartBulb's
 ND-SmartBulb_NNNN-NAME = SmartBulb
@@ -66,13 +64,12 @@ ND-SmartBulb_DTNE-ICON = Lamp
 ND-SmartBulb_DNNE-ICON = Lamp
 ND-SmartBulb_DTCE-ICON = Lamp
 
-
-ST-sb-ST-NAME = Bulb Status
-ST-sb-GV0-NAME = Connected
-ST-sb-GV1-NAME = Brightness
 ST-sb-GV2-NAME = Color Temperature
 ST-sb-GV3-NAME = Hue
-ST-sb-GV3-NAME = Saturation
+ST-sb-GV4-NAME = Saturation
+ST-sb-GV5-NAME = Brightness
+ST-sb-RR-NAME = Transition time
+ST-sb-CLITEMP-NAME = Color Temperature
 
 ST-spe-CC-NAME = Current
 ST-spe-CV-NAME = Voltage
@@ -80,18 +77,6 @@ ST-spe-CPW-NAME = Current Power Used
 ST-spe-TPW-NAME = Total Power Used
 
 CMD-BRI-NAME = Brightness
-
-ST-GV1-NAME = X
-ST-GV2-NAME = Y
-ST-GV3-NAME = Hue
-ST-GV4-NAME = Saturation
-ST-GV5-NAME = Brightness
-ST-sb-GV6-NAME = Reachable
-ST-HGR-GV6-NAME = Number of Lights
-ST-ST-NAME = Status
-ST-RR-NAME = Transition time
-ST-CLITEMP-NAME = Color Temperature
-
 
 CMD-DON-NAME = On
 CMD-DOF-NAME = Off
@@ -123,30 +108,30 @@ CMDP-HCLRGB-B-NAME = Blue
 CMDP-HCLXY-X-NAME = X
 CMDP-HCLXY-Y-NAME = Y
 
-COLORS_HCSEL-1 = Aqua
-COLORS_HCSEL-2 = Azure
-COLORS_HCSEL-3 = Beige
-COLORS_HCSEL-4 = Blue
-COLORS_HCSEL-5 = Chartreuse
-COLORS_HCSEL-6 = Coral
-COLORS_HCSEL-7 = Crimson
-COLORS_HCSEL-8 = Forest Green
-COLORS_HCSEL-9 = Fuchsia
-COLORS_HCSEL-10 = Golden
-COLORS_HCSEL-11 = Gray
-COLORS_HCSEL-12 = Green
-COLORS_HCSEL-13 = Hot Pink
-COLORS_HCSEL-14 = Indigo
-COLORS_HCSEL-15 = Lavender
-COLORS_HCSEL-16 = Lime
-COLORS_HCSEL-17 = Maroon
-COLORS_HCSEL-18 = Navy Blue
-COLORS_HCSEL-19 = Olive
-COLORS_HCSEL-20 = Red
-COLORS_HCSEL-21 = Royal Blue
-COLORS_HCSEL-22 = Tan
-COLORS_HCSEL-23 = Teal
-COLORS_HCSEL-24 = White
+COLORS_HCSEL-0 = Aqua
+COLORS_HCSEL-1 = Azure
+COLORS_HCSEL-2 = Beige
+COLORS_HCSEL-3 = Blue
+COLORS_HCSEL-4 = Chartreuse
+COLORS_HCSEL-5 = Coral
+COLORS_HCSEL-6 = Crimson
+COLORS_HCSEL-7 = Forest Green
+COLORS_HCSEL-8 = Fuchsia
+COLORS_HCSEL-9 = Golden
+COLORS_HCSEL-10 = Gray
+COLORS_HCSEL-11 = Green
+COLORS_HCSEL-12 = Hot Pink
+COLORS_HCSEL-13 = Indigo
+COLORS_HCSEL-14 = Lavender
+COLORS_HCSEL-15 = Lime
+COLORS_HCSEL-16 = Maroon
+COLORS_HCSEL-17 = Navy Blue
+COLORS_HCSEL-18 = Olive
+COLORS_HCSEL-19 = Red
+COLORS_HCSEL-20 = Royal Blue
+COLORS_HCSEL-21 = Tan
+COLORS_HCSEL-22 = Teal
+COLORS_HCSEL-23 = White
 
 ALERTS_HASEL-1 = None
 ALERTS_HASEL-2 = Breathe
@@ -162,14 +147,10 @@ CMDP-BR-NAME = Brightness
 CMDP-K-NAME = Color Temperature
 CMDP-D-NAME = Transition Time
 
-# PGM-CMD-SET_COLOR_RGB-FMT = /R// Red ${v}/ /G// Green ${v}/ /B// Blue ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
 PGM-CMD-SET_COLOR_RGB-FMT = /R// Red ${v}/ /G// Green ${v}/ /B// Blue ${v}/ /BR// Brightness ${v}/
 
-# PGM-CMD-SET_COLOR_XY-FMT = /X// X ${v}/ /Y// Y ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
 PGM-CMD-SET_COLOR_XY-FMT = /X// X ${v}/ /Y// Y ${v}/ /BR// Brightness ${v}/
 
-# PGM-CMD-SET_HSB-FMT = /H// Hue ${v}/ /S// Saturation ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
 PGM-CMD-SET_HSB-FMT = /H// Hue ${v}/ /S// Saturation ${v}/ /BR// Brightness ${v}/
 
-# PGM-CMD-SET_CTBR-FMT =  /K// Color Temperature ${v}/ /BR// Brightness ${v}/ /D// in ${v}/
 PGM-CMD-SET_CTBR-FMT =  /K// Color Temperature ${v}/ /BR// Brightness ${v}/

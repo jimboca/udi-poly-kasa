@@ -19,6 +19,7 @@ class SmartDeviceNode(polyinterface.Node):
         self.cfg  = cfg
         self.l_debug('__init__','dev={}'.format(dev))
         self.l_debug('__init__','cfg={}'.format(cfg))
+        self.ready = False
         self.host = cfg['host']
         self.debug_level = 0
         self.st = None
@@ -34,9 +35,12 @@ class SmartDeviceNode(polyinterface.Node):
         super().__init__(controller, parent_address, address, name)
 
     def start(self):
-        pass
+        self.connect()
+        self.ready = True
 
     def shortPoll(self):
+        if not self.ready:
+            return
         # Keep trying to connect if possible
         self.connect()
         self.set_state()
@@ -75,8 +79,8 @@ class SmartDeviceNode(polyinterface.Node):
         pass
 
     def connect(self):
-        self.l_debug('connect', 'connected={}'.format(self.is_connected()), level=0, exc_info=False)
         if not self.is_connected():
+            self.l_debug('connect', 'connected={}'.format(self.is_connected()), level=0, exc_info=False)
             try:
                 self.dev = self.newdev()
                 # We can get a dev, but not really connected, so make sure we are connected.
@@ -137,6 +141,7 @@ class SmartDeviceNode(polyinterface.Node):
                 self.set_connected(False)
 
     def set_connected(self,st):
+        # Just return if setting to same status
         if st == self.connected:
             return
         self.l_debug('set_connected', "{}".format(st), level=0, exc_info=False)
