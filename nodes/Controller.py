@@ -93,12 +93,12 @@ class Controller(polyinterface.Controller):
                         if self.nodes[node].is_connected():
                             self.nodes[node].longPoll()
                         else:
-                            self.l_info('longPoll',"Known device not responding {} '{}'".format(self.nodes[node].address,self.nodes[node].name))
+                            self.l_warning('longPoll',"Known device not responding {} '{}'".format(self.nodes[node].address,self.nodes[node].name))
                             all_connected = False
                     except:
                         pass # in case node doesn't have a longPoll method
             if not all_connected:
-                self.l_info("longPoll", "Not all devices are connected, running discover to check for them")
+                self.l_warning("longPoll", "Not all devices are connected, running discover to check for them")
                 self.discover_new()
             self.short_event.clear()
             self.l_debug('_shortPoll','done')
@@ -134,7 +134,7 @@ class Controller(polyinterface.Controller):
             if not self.smac(mac) in devm:
                 cfg = self.get_device_cfg(mac)
                 if cfg is not None:
-                    self.l_info('discover', "Adding previously known device that didn't respond to discover: {}".format(cfg))
+                    self.l_warning('discover', "Adding previously known device that didn't respond to discover: {}".format(cfg))
                     self.add_node(cfg=cfg)
         self.discover_done = True
         LOGGER.info("discover: done")
@@ -155,7 +155,7 @@ class Controller(polyinterface.Controller):
                     self.l_info('discover_new', "Connected:{} '{}'".format(node.is_connected(),node.name))
                     if not node.is_connected():
                         # Previously connected node
-                        self.l_info('discover_new', "Connected:{} '{}' host is {} same as {}".format(node.is_connected(),node.name,node.host,dev.host))
+                        self.l_warning('discover_new', "Connected:{} '{}' host is {} same as {}".format(node.is_connected(),node.name,node.host,dev.host))
                         node.connect()
             else:
                 self.l_info('discover_new','found new device {}'.format(dev.alias))
