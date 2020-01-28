@@ -8,6 +8,7 @@ LOGGER = polyinterface.LOGGER
 class SmartStripNode(polyinterface.Node):
 
     def __init__(self, controller, address, name, dev=None, cfg=None):
+        self.ready = False
         self.name = name
         if dev is not None:
             self.host = dev.host
@@ -29,8 +30,11 @@ class SmartStripNode(polyinterface.Node):
             nname    = self.dev.get_alias(index=pnum)
             self.l_info('start','adding plug num={} address={} name={}'.format(pnum,naddress,nname))
             self.controller.addNode(SmartStripPlugNode(self.controller, self, naddress, nname, pnum))
-
+        self.ready = True
+        
     def shortPoll(self):
+        if not self.ready:
+            return
         self.check_st()
 
     def check_st(self):

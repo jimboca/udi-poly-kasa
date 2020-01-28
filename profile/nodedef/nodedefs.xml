@@ -145,7 +145,7 @@
       </cmds>
   </nodeDef>
 
-  <!-- Bulb - Dimmable, Full Color -->
+  <!-- Bulb - Dimmable, Full Color, No Energy -->
   <nodeDef id="SmartBulb_DTCN" nls="sb">
       <editors />
       <sts>
@@ -167,7 +167,7 @@
       </cmds>
   </nodeDef>
 
-  <!-- Extended Color Light -->
+  <!-- Bulb: Dimmable, Full Color, Energy -->
   <nodeDef id="SmartBulb_DTCE" nls="sb">
       <editors />
       <sts>
@@ -244,28 +244,6 @@
               <cmd id="SET_EFFECT">
                   <p id="" editor="HESEL" />
               </cmd>-->
-          </accepts>
-      </cmds>
-  </nodeDef>
-
-  <!-- Bulb -  Dimmable & Color Temperature & Energy -->
-  <nodeDef id="SmartBulb_DTNE_old" nls="sb">
-      <editors />
-      <sts>
-          <st id="ST" editor="onoff" />
-          <st id="GV0" editor="bool" />
-          <st id="GV1" editor="bri" /> <!-- Brightness -->
-          <st id="GV2" editor="ctemp" /> <!-- Color Temperature -->
-          <st id="CPW" editor="watts" />   <!-- Driver=Current Power Used = energy['power_mw'] -->
-      </sts>
-      <cmds>
-          <sends />
-          <accepts>
-            <cmd id="BRI">
-              <p id="" editor="bri" init="GV1" />
-            </cmd>
-            <cmd id="DON" />
-            <cmd id="DOF" />
           </accepts>
       </cmds>
   </nodeDef>

@@ -52,6 +52,8 @@ class SmartBulbNode(SmartDeviceNode):
         super().__init__(controller, controller.address, address, name, dev, cfg)
 
     def set_all_drivers(self):
+        if self.dev.is_dimmable:
+            self.brightness = st2bri(self.dev.brightness)
         if self.dev.is_color:
             hsv = self.dev.hsv
             self.setDriver('GV3',hsv[0])
@@ -69,6 +71,18 @@ class SmartBulbNode(SmartDeviceNode):
             # This won't actually change unless the device is on
             self.dev.brightness = int(bri2st(self.brightness))
             self.setDriver('ST',self.dev.brightness)
+
+    def brt(self):
+        self.l_debug('bri','connected={}'.format(self.connected))
+        self.brightness = st2bri(self.dev.brightness)
+        if self.is_connected() and self.brightness <= 255:
+            self.set_bri(self.brightness + 15)
+
+    def dim(self):
+        self.l_debug('dim','connected={}'.format(self.connected))
+        self.brightness = st2bri(self.dev.brightness)
+        if self.is_connected() and self.brightness > 0:
+            self.set_bri(self.brightness - 15)
 
     def set_hue(self,val):
         self.l_debug('set_hue','connected={} val={}'.format(self.connected,val))
@@ -107,9 +121,11 @@ class SmartBulbNode(SmartDeviceNode):
         return SmartBulb(self.host)
 
     def cmd_set_on(self,command):
+        self.dev.turn_on()
         super().cmd_set_on(command)
 
     def cmd_set_off(self,command):
+        self.dev.turn_off()
         super().cmd_set_off(command)
 
     def cmd_set_bri(self,command):
@@ -156,6 +172,16 @@ class SmartBulbNode(SmartDeviceNode):
             self.l_error('cmd_set_color_name','Not supported on this device')
         self.set_color_name(command.get('value'))
 
+    def cmd_brt(self,command):
+        if not self.dev.is_dimmable:
+            self.l_error('cmd_brt','Not supported on this device')
+        self.brt()
+
+    def cmd_dim(self,command):
+        if not self.dev.is_dimmable:
+            self.l_error('cmd_dim','Not supported on this device')
+        self.dim()
+
     commands = {
         'DON': cmd_set_on,
         'DOF': cmd_set_off,
@@ -165,4 +191,6 @@ class SmartBulbNode(SmartDeviceNode):
         'CLITEMP' : cmd_set_color_temp,
         'SET_CTBR' : cmd_set_color_temp_brightness,
         'SET_COLOR' : cmd_set_color_name,
+        'BRT': cmd_brt,
+        'DIM': cmd_dim,
     }
