@@ -111,6 +111,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.3.2: 02/01/2020
+  - Make sure bulb is on before adjusting other values. Temporary workaround to be fixed better later.
 - 2.3.1: 01/27/2020
   - Fix race condition between discover adding smart strip and shortPoll accessing it
   - Dim and Brighten should be working, although tested minimally

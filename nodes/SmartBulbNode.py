@@ -131,19 +131,23 @@ class SmartBulbNode(SmartDeviceNode):
     def cmd_set_bri(self,command):
         val = int(command.get('value'))
         self.l_info("cmd_set_bri",val)
+        self.dev.turn_on()
         self.set_bri(val)
 
     def cmd_set_sat(self,command):
         val = int(command.get('value'))
         self.l_info("cmd_set_sat",val)
+        self.dev.turn_on()
         self.set_sat(val)
 
     def cmd_set_hue(self,command):
         val = int(command.get('value'))
         self.l_info("cmd_set_hue",val)
+        self.dev.turn_on()
         self.set_hue(val)
 
     def cmd_set_color_temp(self,command):
+        self.dev.turn_on()
         if not self.dev.is_variable_color_temp:
             self.l_error('cmd_set_color_temp','Not supported on this device?')
             return False
@@ -156,6 +160,8 @@ class SmartBulbNode(SmartDeviceNode):
         if not self.dev.is_variable_color_temp:
             self.l_error('cmd_set_color_temp_brightnesss','Not supported on this device?')
             return False
+        # Must turn on before we adjust
+        self.dev.turn_on()
         #cstate = self.dev.get_light_state()
         query = command.get('query')
         #self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(cstate))
@@ -166,15 +172,18 @@ class SmartBulbNode(SmartDeviceNode):
         }
         self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(light_state))
         self.dev.set_light_state(light_state)
+        self.dev.set_state()
 
     def cmd_set_color_name(self,command):
         if not self.dev.is_color:
             self.l_error('cmd_set_color_name','Not supported on this device')
+        self.dev.turn_on()
         self.set_color_name(command.get('value'))
 
     def cmd_brt(self,command):
         if not self.dev.is_dimmable:
             self.l_error('cmd_brt','Not supported on this device')
+        self.dev.turn_on()
         self.brt()
 
     def cmd_dim(self,command):
