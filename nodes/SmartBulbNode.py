@@ -172,7 +172,7 @@ class SmartBulbNode(SmartDeviceNode):
         }
         self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(light_state))
         self.dev.set_light_state(light_state)
-        self.dev.set_state()
+        self.set_state()
 
     def cmd_set_color_name(self,command):
         if not self.dev.is_color:
