@@ -6,7 +6,7 @@
     </editor>
 
     <editor id="I_DEBUG">
-      <range uom="25" subset="8,9,10,20,30,40,50" nls="CDM"/>
+      <range uom="25" subset="9,10,20,30,40,50" nls="CDM"/>
     </editor>
 
     <editor id="onoff">

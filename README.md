@@ -111,6 +111,9 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.4.0: 08/15/2020
+  - [Issue 6](https://github.com/jimboca/udi-poly-kasa/issues/6) Convert to new [python-kasa library](https://github.com/python-kasa/python-kasa)
+  - Now requires Python 3.7 which is available on Polisy by default, but it means your RPi must be on Buster!
 - 2.3.3: 02/18/2020
   - Fixed https://github.com/jimboca/udi-poly-kasa/issues/5
 - 2.3.2: 02/01/2020

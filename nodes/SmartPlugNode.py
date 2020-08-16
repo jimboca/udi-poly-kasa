@@ -4,7 +4,8 @@
 # This code is used for bulbs
 #
 import polyinterface
-from pyHS100 import SmartPlug
+from kasa import SmartPlug,SmartDeviceException
+
 from nodes import SmartDeviceNode
 
 LOGGER = polyinterface.LOGGER
@@ -41,11 +42,6 @@ class SmartPlugNode(SmartDeviceNode):
     def longPoll(self):
         super().longPoll()
         self.set_energy()
-
-    def query(self):
-        super().query()
-        self.set_energy()
-        self.reportDrivers()
 
     def newdev(self):
         return SmartPlug(self.host)

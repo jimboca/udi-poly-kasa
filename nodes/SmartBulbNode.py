@@ -3,8 +3,8 @@
 #
 # This code is used for bulbs
 #
-import polyinterface
-from pyHS100 import SmartBulb
+import polyinterface,asyncio
+from kasa import SmartBulb,SmartDeviceException
 from nodes import SmartDeviceNode
 from converters import color_hsv, color_rgb, bri2st, st2bri
 
@@ -51,6 +51,10 @@ class SmartBulbNode(SmartDeviceNode):
             self.drivers.append({'driver': 'GV4', 'value': 0, 'uom': 100}) #sat
         super().__init__(controller, controller.address, address, name, dev, cfg)
 
+    def start(self):
+        super().start()
+        self.valid_temperature_range = list(self.dev.valid_temperature_range)
+
     def set_all_drivers(self):
         if self.dev.is_dimmable:
             self.brightness = st2bri(self.dev.brightness)
@@ -63,132 +67,151 @@ class SmartBulbNode(SmartDeviceNode):
             self.setDriver('CLITEMP',self.dev.color_temp)
 
     def set_bri(self,val):
-        self.l_debug('set_bri','connected={} val={}'.format(self.connected,val))
+        LOGGER.debug(f'{self.pfx} connected={self.connected} val={val}')
         if self.is_connected():
             self.brightness = int(val)
-            self.l_debug('set_bri','{}'.format(val))
+            LOGGER.debug(f'{val}')
             self.setDriver('GV5',self.brightness)
             # This won't actually change unless the device is on
-            self.dev.brightness = int(bri2st(self.brightness))
+            asyncio.run(self.dev.set_brightness(int(bri2st(self.brightness))))
+            asyncio.run(self.dev.update())
             self.setDriver('ST',self.dev.brightness)
 
     def brt(self):
-        self.l_debug('bri','connected={}'.format(self.connected))
+        LOGGER.debug(f'{self.pfx} connected={self.connected}')
+        asyncio.run(self.dev.update())
         self.brightness = st2bri(self.dev.brightness)
         if self.is_connected() and self.brightness <= 255:
             self.set_bri(self.brightness + 15)
 
     def dim(self):
-        self.l_debug('dim','connected={}'.format(self.connected))
+        LOGGER.debug('{self.pfx} connected={self.connected}')
+        asyncio.run(self.dev.update())
         self.brightness = st2bri(self.dev.brightness)
         if self.is_connected() and self.brightness > 0:
             self.set_bri(self.brightness - 15)
 
     def set_hue(self,val):
-        self.l_debug('set_hue','connected={} val={}'.format(self.connected,val))
+        LOGGER.debug(f'{self.pfx} connected={self.connected} val={val}')
         if self.is_connected():
+            asyncio.run(self.dev.update())
             hsv = list(self.dev.hsv)
-            self.l_debug('set_hsv','{}'.format(val))
+            LOGGER.debug(f'{self.pfx} val={val}')
             hsv[0] = val
             self.dev.hsv = hsv
+            asyncio.run(self.dev.set_hsv(hsv))
             self.setDriver('GV3',val)
             self.set_state()
 
     def set_sat(self,val):
-        self.l_debug('set_sat','connected={} val={}'.format(self.connected,val))
+        LOGGER.debug(f'{self.pfx} connected={self.connected} val={val}')
         if self.is_connected():
+            asyncio.run(self.dev.update())
             hsv = list(self.dev.hsv)
-            self.l_debug('set_sat','{}'.format(val))
+            LOGGER.debug(f'{self.pfx} val={val}')
             hsv[1] = bri2st(val)
             self.dev.hsv = hsv
+            asyncio.run(self.dev.set_hsv(hsv))
             self.setDriver('GV4',st2bri(val))
             self.set_state()
 
     def set_color_temp(self,val):
-        self.l_debug('set_color_temp','connected={} val={}'.format(self.connected,val))
+        LOGGER.debug(f'{self.pfx} connected={self.connected} val={val}')
         if self.is_connected():
-            self.dev.color_temp = int(val)
+            asyncio.run(self.dev.set_color_temp(int(val)))
+            asyncio.run(self.dev.update())
             self.setDriver('CLITEMP',self.dev.color_temp)
 
     def set_color_name(self,val):
-        self.l_debug('set_color_name','connected={} val={}'.format(self.connected,val))
+        LOGGER.debug(f'{self.pfx} connected={self.connected} val={val}')
         if self.is_connected():
-            self.l_debug('set_color_name','rgb={}'.format(color_rgb(val)))
-            self.dev.hsv = color_hsv(val)
+            LOGGER.debug('set_color_name','rgb={}'.format(color_rgb(val)))
+            asyncio.run(bulb.set_hsv(color_hsv(val)))
             self.set_state()
 
     def newdev(self):
         return SmartBulb(self.host)
 
     def cmd_set_on(self,command):
-        self.dev.turn_on()
+        asyncio.run(self.dev.turn_on())
         super().cmd_set_on(command)
 
     def cmd_set_off(self,command):
-        self.dev.turn_off()
+        asyncio.run(self.dev.turn_off())
         super().cmd_set_off(command)
 
     def cmd_set_bri(self,command):
         val = int(command.get('value'))
-        self.l_info("cmd_set_bri",val)
-        self.dev.turn_on()
+        LOGGER.info(f'{self.pfx} val={val}')
+        asyncio.run(self.dev.turn_on())
         self.set_bri(val)
 
     def cmd_set_sat(self,command):
         val = int(command.get('value'))
-        self.l_info("cmd_set_sat",val)
-        self.dev.turn_on()
+        LOGGER.info(f'{self.pfx} val={val}')
+        asyncio.run(self.dev.turn_on())
         self.set_sat(val)
 
     def cmd_set_hue(self,command):
         val = int(command.get('value'))
-        self.l_info("cmd_set_hue",val)
-        self.dev.turn_on()
+        LOGGER.info(f'{self.pfx} val={val}')
+        asyncio.run(self.dev.turn_on())
         self.set_hue(val)
 
     def cmd_set_color_temp(self,command):
-        self.dev.turn_on()
+        asyncio.run(self.dev.turn_on())
         if not self.dev.is_variable_color_temp:
-            self.l_error('cmd_set_color_temp','Not supported on this device?')
+            LOGGER.error('{self.pfx} Not supported on this device?')
             return False
         val = int(command.get('value'))
-        self.l_info("cmd_set_color_temp",val)
+        LOGGER.info(f'val={val}')
         self.set_color_temp(val)
 
     # TODO: Better to call get_list_state, set_light_state s
     def cmd_set_color_temp_brightness(self, command):
         if not self.dev.is_variable_color_temp:
-            self.l_error('cmd_set_color_temp_brightnesss','Not supported on this device?')
+            LOGGER.error('{self.pfx} Not supported on this device?')
             return False
-        # Must turn on before we adjust
-        self.dev.turn_on()
+        light_state = asyncio.run(self.dev.get_light_state())
+        LOGGER.debug(f'{self.pfx} current_state={light_state}')
         #cstate = self.dev.get_light_state()
         query = command.get('query')
-        #self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(cstate))
-        light_state = {
-            "on_off": 1,
-            "brightness": bri2st(int(query.get('BR.uom100'))),
-            "color_temp": int(query.get('K.uom26')),
-        }
-        self.l_debug('cmd_set_color_temp_brightnesss','{}'.format(light_state))
-        self.dev.set_light_state(light_state)
+        #LOGGER.debug('cmd_set_color_temp_brightnesss','{}'.format(cstate))
+        light_state['on_off'] = 1
+        light_state['brightness'] = bri2st(int(query.get('BR.uom100')))
+        ct = int(query.get('K.uom26'))
+        if ct < self.dev.valid_temperature_range[0]:
+            LOGGER.error(f'{self.pfx} color_temp={ct} is to low, using minimum {self.dev.valid_temperature_range[0]}')
+            ct = self.dev.valid_temperature_range[0]
+        elif ct > self.dev.valid_temperature_range[1]:
+            LOGGER.error(f'{self.pfx} color_temp={ct} is to high, using maximum {self.dev.valid_temperature_range[1]}')
+            ct = self.dev.valid_temperature_range[1]
+        light_state['color_temp'] = ct
+
+        LOGGER.debug(f'{self.pfx}     new_state={light_state}')
+        try:
+            asyncio.run(self.dev.set_light_state(light_state))
+        except SmartDeviceException as ex:
+            LOGGER.error(f'{self.pfx} failed: {ex}')
         self.set_state()
 
     def cmd_set_color_name(self,command):
         if not self.dev.is_color:
-            self.l_error('cmd_set_color_name','Not supported on this device')
-        self.dev.turn_on()
-        self.set_color_name(command.get('value'))
+            LOGGER.error('{self.pfx} Not supported on this device')
+        asyncio.run(self.dev.turn_on())
+        val = int(command.get('value'))
+        LOGGER.info(f'val={val}')
+        self.set_color_name(val)
 
     def cmd_brt(self,command):
         if not self.dev.is_dimmable:
-            self.l_error('cmd_brt','Not supported on this device')
-        self.dev.turn_on()
+            LOGGER.error('{self.pfx} Not supported on this device')
+        asyncio.run(self.dev.turn_on())
         self.brt()
 
     def cmd_dim(self,command):
         if not self.dev.is_dimmable:
-            self.l_error('cmd_dim','Not supported on this device')
+            LOGGER.error('{self.pfx} Not supported on this device')
         self.dim()
 
     commands = {
