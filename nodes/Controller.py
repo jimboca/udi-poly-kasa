@@ -82,10 +82,17 @@ class Controller(polyinterface.Controller):
             LOGGER.debug('Starting Thread')
             st = self.long_thread.start()
             LOGGER.debug('Thread start st={st}')
+        # Tell the thread to run
+        LOGGER.debug(f'thread={self.long_thread} event={self.long_event}')
+        if self.long_event is not None:
+            LOGGER.debug('calling event.set')
+            self.long_event.set()
+        else:
+            LOGGER.error(f'event is gone? thread={self.long_thread} event={self.long_event}')
 
     def _longPoll(self):
         while (True):
-            self.short_event.wait()
+            self.long_event.wait()
             LOGGER.debug('start')
             all_connected = True
             for node in self.nodes:
@@ -101,7 +108,7 @@ class Controller(polyinterface.Controller):
             if not all_connected:
                 LOGGER.warning("Not all devices are connected, running discover to check for them")
                 self.discover_new()
-            self.short_event.clear()
+            self.long_event.clear()
             LOGGER.debug('done')
 
     def query(self):
