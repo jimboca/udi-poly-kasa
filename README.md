@@ -113,6 +113,8 @@ Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and s
 # Release Notes
 - 2.4.0: 08/15/2020
   - [Issue 6](https://github.com/jimboca/udi-poly-kasa/issues/6) Convert to new [python-kasa library](https://github.com/python-kasa/python-kasa)
+    - Currently must install manually: pip3 install --user python-kasa --pre --no-warn-script-location
+    - And for Polyisy: sudo -u polyglot pip3 install --user python-kasa --pre --no-warn-script-location
   - Now requires Python 3.7 which is available on Polisy by default, but it means your RPi must be on Buster!
 - 2.3.3: 02/18/2020
   - Fixed https://github.com/jimboca/udi-poly-kasa/issues/5

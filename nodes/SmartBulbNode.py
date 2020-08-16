@@ -51,10 +51,6 @@ class SmartBulbNode(SmartDeviceNode):
             self.drivers.append({'driver': 'GV4', 'value': 0, 'uom': 100}) #sat
         super().__init__(controller, controller.address, address, name, dev, cfg)
 
-    def start(self):
-        super().start()
-        self.valid_temperature_range = list(self.dev.valid_temperature_range)
-
     def set_all_drivers(self):
         if self.dev.is_dimmable:
             self.brightness = st2bri(self.dev.brightness)
