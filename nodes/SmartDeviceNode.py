@@ -86,6 +86,7 @@ class SmartDeviceNode(polyinterface.Node):
         self.set_energy()
 
     def set_state(self):
+        LOGGER.debug(f'set_state: dev={self.dev}')
         # This doesn't call set_energy, since that is only called on long_poll's
         # We don't use self.connected here because dev might be good, but device is unplugged
         # So then when it's plugged back in the same dev will still work

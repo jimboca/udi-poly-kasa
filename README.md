@@ -111,6 +111,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.4.1: 10/01/2020
+  - Added Support for Smart Light Strip
 - 2.4.0: 08/15/2020
   - [Issue 6](https://github.com/jimboca/udi-poly-kasa/issues/6) Convert to new [python-kasa library](https://github.com/python-kasa/python-kasa)
     - Currently must install manually: pip3 install --user python-kasa --pre --no-warn-script-location

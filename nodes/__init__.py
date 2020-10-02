@@ -9,4 +9,5 @@ from .SmartStripPlugNode import SmartStripPlugNode
 from .SmartStripNode     import SmartStripNode
 from .SmartPlugNode      import SmartPlugNode
 from .SmartBulbNode      import SmartBulbNode
+from .SmartLightStripNode import SmartLightStripNode
 from .Controller         import Controller

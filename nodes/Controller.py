@@ -9,6 +9,7 @@ from kasa import Discover
 from nodes import SmartStripNode
 from nodes import SmartPlugNode
 from nodes import SmartBulbNode
+from nodes import SmartLightStripNode
 LOGGER = polyinterface.LOGGER
 #logging.getLogger('pyHS100').setLevel(logging.DEBUG)
 
@@ -190,6 +191,9 @@ class Controller(polyinterface.Controller):
             elif dev.is_plug:
                 type = 'SmartPlug'
                 name = dev.alias
+            elif dev.is_light_strip:
+                type = 'SmartLightStrip'
+                name = dev.alias
             else:
                 LOGGER.error(f"What is this? {dev}")
                 return False
@@ -209,6 +213,8 @@ class Controller(polyinterface.Controller):
             node = self.addNode(SmartPlugNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
         elif cfg['type'] == 'SmartBulb':
             node = self.addNode(SmartBulbNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
+        elif cfg['type'] == 'SmartLightStrip':
+            node = self.addNode(SmartLightStripNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
         else:
             LOGGER.error(f"Device type not yet supported: {cfg['type']}")
             return False

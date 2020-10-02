@@ -107,7 +107,7 @@ class SmartBulbNode(SmartDeviceNode):
             LOGGER.debug(f'{self.pfx} val={val}')
             hsv[1] = bri2st(val)
             self.dev.hsv = hsv
-            asyncio.run(self.dev.set_hsv(hsv))
+            asyncio.run(self.dev.set_hsv(hue=hsv[0], saturation=hsv[1], value=hsv[2]))
             self.setDriver('GV4',st2bri(val))
             self.set_state()
 
@@ -121,8 +121,10 @@ class SmartBulbNode(SmartDeviceNode):
     def set_color_name(self,val):
         LOGGER.debug(f'{self.pfx} connected={self.connected} val={val}')
         if self.is_connected():
-            LOGGER.debug('set_color_name','rgb={}'.format(color_rgb(val)))
-            asyncio.run(bulb.set_hsv(color_hsv(val)))
+            rgb = color_rgb(val)
+            hsv = color_hsv(val)
+            LOGGER.debug(f'set_color_name rgb={rgb} hsv={hsv}')
+            asyncio.run(self.dev.set_hsv(hue=hsv[0], saturation=hsv[1], value=hsv[2]))
             self.set_state()
 
     def newdev(self):

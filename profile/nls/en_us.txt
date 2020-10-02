@@ -63,6 +63,10 @@ ND-SmartBulb_DTNE-ICON = Lamp
 ND-SmartBulb_DNNE-ICON = Lamp
 ND-SmartBulb_DTCE-ICON = Lamp
 
+# SmartLightStrip
+ND-SmartLightStrip_DTCE-NAME = SmartBulb Color Energy
+ND-SmartLightStrip_DTCE-ICON = Lamp
+
 ST-sb-GV2-NAME = Color Temperature
 ST-sb-GV3-NAME = Hue
 ST-sb-GV4-NAME = Saturation
@@ -95,7 +99,7 @@ CMD-SET_SAT-NAME = Set Saturation
 CMD-SET_BRI-NAME = Set Brightness
 CMD-CLITEMP-NAME = Set Color Temperature
 CMD-RR-NAME = Set Transition Time
-CMD-SET_HSB-NAME = Set HSB Color
+CMD-SET_HSV-NAME = Set HSV Color
 CMD-SET_COLOR-NAME = Set Color
 CMD-SET_ALERT-NAME = Set Alert
 CMD-SET_EFFECT-NAME = Set Effect
@@ -150,6 +154,6 @@ PGM-CMD-SET_COLOR_RGB-FMT = /R// Red ${v}/ /G// Green ${v}/ /B// Blue ${v}/ /BR/
 
 PGM-CMD-SET_COLOR_XY-FMT = /X// X ${v}/ /Y// Y ${v}/ /BR// Brightness ${v}/
 
-PGM-CMD-SET_HSB-FMT = /H// Hue ${v}/ /S// Saturation ${v}/ /BR// Brightness ${v}/
+PGM-CMD-SET_HSV-FMT = /H// Hue ${v}/ /S// Saturation ${v}/ /BR// Brightness ${v}/
 
 PGM-CMD-SET_CTBR-FMT =  /K// Color Temperature ${v}/ /BR// Brightness ${v}/

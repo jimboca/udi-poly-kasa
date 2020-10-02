@@ -8,7 +8,7 @@
     "notice": "Your disclaimer here",
     "shortPoll": "30",
     "longPoll": "240",
-    "profile_version": "2.4.0",
+    "profile_version": "2.4.1",
     "credits": [
         {
             "title": "Kasa: a NodeServer for TP-Link Kasa Integration",
