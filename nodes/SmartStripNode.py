@@ -1,11 +1,11 @@
 
 import polyinterface
 from kasa import SmartStrip,SmartDeviceException
-from nodes import SmartStripPlugNode
+from nodes import SmartDeviceNode,SmartStripPlugNode
 
 LOGGER = polyinterface.LOGGER
 
-class SmartStripNode(polyinterface.Node):
+class SmartStripNode(SmartDeviceNode):
 
     def __init__(self, controller, address, name, dev=None, cfg=None):
         self.ready = False
@@ -20,17 +20,20 @@ class SmartStripNode(polyinterface.Node):
         # Bug in current PyHS100 doesn't allow us to print dev.
         LOGGER.debug(f'{self.pfx} controller={controller} address={address} name={name} host={self.host}')
         # The strip is it's own parent since the plugs are it's children
-        super(SmartStripNode, self).__init__(self, address, address, name)
+        super(SmartStripNode, self).__init__(self, address, address, name, dev, cfg)
         self.controller = controller
 
     def start(self):
         self.dev = SmartStrip(self.host)
+        super(SmartStripNode, self).start()
+        self.update()
         self.check_st()
+        LOGGER.info(f'{self.dev.alias} has {len(self.dev.children)+1} children')
         for pnum in range(len(self.dev.children)):
             naddress = "{}{:02d}".format(self.address,pnum+1)
-            nname    = self.dev.get_alias(index=pnum)
+            nname    = self.dev.children[pnum].alias
             LOGGER.info(f"{self.pfx} adding plug num={pnum} address={naddress} name={nname}")
-            self.controller.addNode(SmartStripPlugNode(self.controller, self, naddress, nname, pnum))
+            self.controller.addNode(SmartStripPlugNode(self.controller, self, naddress, nname, self.dev.children[pnum]))
         self.ready = True
 
     def shortPoll(self):
@@ -47,7 +50,7 @@ class SmartStripNode(polyinterface.Node):
         # If any are on, then I am on.
         for pnum in range(len(self.dev.children)):
             try:
-                if self.dev.is_on(index=pnum):
+                if self.dev.children[pnum].is_on:
                     is_on = True
             except Exception as ex:
                 LOGGER.error('{self.pfx} failed', exc_info=True)

@@ -27,7 +27,7 @@ class SmartDeviceNode(polyinterface.Node):
         self.event  = None
         self.connected = None # So start will force setting proper status
         LOGGER.debug(f'{self.pfx} controller={controller} address={address} name={name} host={self.host}')
-        if cfg['emeter']:
+        if self.dev.has_emeter:
             self.drivers.append({'driver': 'CC', 'value': 0, 'uom': 1}) #amps
             self.drivers.append({'driver': 'CV', 'value': 0, 'uom': 72}) #volts
             self.drivers.append({'driver': 'CPW', 'value': 0, 'uom': 73}) #watts
@@ -64,7 +64,7 @@ class SmartDeviceNode(polyinterface.Node):
             try:
                 self.dev = self.newdev()
                 # We can get a dev, but not really connected, so make sure we are connected.
-                asyncio.run(self.dev.update())
+                self.update()
                 sys_info = self.dev.sys_info
                 self.set_connected(True)
             except SmartDeviceException as ex:
@@ -74,6 +74,9 @@ class SmartDeviceNode(polyinterface.Node):
                 LOGGER.error(f"{self.pfx} Unknown excption connecting to device '{self.name}' {self.host} will try again later", exc_info=True)
                 self.set_connected(False)
         return self.is_connected
+
+    def update(self):
+        asyncio.run(self.dev.update())
 
     def set_on(self):
         asyncio.run(self.dev.turn_on())
@@ -92,7 +95,7 @@ class SmartDeviceNode(polyinterface.Node):
         # So then when it's plugged back in the same dev will still work
         if self.dev is not None:
             try:
-                asyncio.run(self.dev.update())
+                self.update()
                 if (self.dev.is_on):
                     if self.dev.is_dimmable:
                         self.setDriver('ST',self.dev.brightness)
@@ -128,7 +131,7 @@ class SmartDeviceNode(polyinterface.Node):
         pass
 
     def set_energy(self):
-        if self.cfg['emeter']:
+        if self.dev.has_emeter:
             try:
                 energy = self.dev.emeter_realtime
                 LOGGER.debug(f'{self.pfx} {energy}')

@@ -1,14 +1,15 @@
 
 import polyinterface
+import asyncio
 
 LOGGER = polyinterface.LOGGER
 
 
 class SmartStripPlugNode(polyinterface.Node):
 
-    def __init__(self, controller, parent, address, name, index):
+    def __init__(self, controller, parent, address, name, dev):
         self.name = name
-        self.index = index
+        self.dev = dev
         self.debug_level = 0
         self.pobj = parent # super changes self.parent
         # The strip is it's own parent since the plugs are it's children
@@ -24,14 +25,14 @@ class SmartStripPlugNode(polyinterface.Node):
 
     def setOn(self, command):
         self.setDriver('ST', 100)
-        self.pobj.dev.turn_on(index=self.index)
+        asyncio.run(self.dev.turn_on())
 
     def setOff(self, command):
         self.setDriver('ST', 0)
-        self.pobj.dev.turn_off(index=self.index)
+        asyncio.run(self.dev.turn_off())
 
     def check_st(self):
-        if self.pobj.dev.is_on(index=self.index):
+        if self.dev.is_on:
             self.setDriver('ST', 100)
         else:
             self.setDriver('ST', 0)

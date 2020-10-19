@@ -138,9 +138,9 @@ class Controller(polyinterface.Controller):
         self.devm[self.smac(dev.mac)] = True
 
     def discover(self):
-        LOGGER.info(f"start: {self.poly.network_interface['broadcast']}")
+        LOGGER.info(f"start: {self.poly.network_interface['broadcast']} timout=10 discovery_packets=10")
         self.devm = {}
-        devices = asyncio.run(Discover.discover(target=self.poly.network_interface['broadcast'],on_discovered=self.discover_add_device))
+        devices = asyncio.run(Discover.discover(timeout=10,discovery_packets=10,target=self.poly.network_interface['broadcast'],on_discovered=self.discover_add_device))
         # make sure all we know about are added in case they didn't respond this time.
         for mac in self.polyConfig['customParams']:
             if not self.smac(mac) in self.devm:
