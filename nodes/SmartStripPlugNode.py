@@ -32,7 +32,8 @@ class SmartStripPlugNode(polyinterface.Node):
         asyncio.run(self.dev.turn_off())
 
     def check_st(self):
-        if self.dev.is_on:
+        LOGGER.debug(f'{self.dev.alias}:check_st: is_on={self.dev.is_on}')
+        if self.dev.is_on is True:
             self.setDriver('ST', 100)
         else:
             self.setDriver('ST', 0)

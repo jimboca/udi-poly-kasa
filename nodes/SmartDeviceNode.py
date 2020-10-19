@@ -96,7 +96,7 @@ class SmartDeviceNode(polyinterface.Node):
         if self.dev is not None:
             try:
                 self.update()
-                if (self.dev.is_on):
+                if self.dev.is_on is True:
                     if self.dev.is_dimmable:
                         self.setDriver('ST',self.dev.brightness)
                         self.setDriver('GV5',int(st2bri(self.dev.brightness)))
