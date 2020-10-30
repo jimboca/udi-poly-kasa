@@ -111,6 +111,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.4.4: 10/30/2020
+  - Fixed bulb on off status
 - 2.4.3: 10/29/2020
   - SmartPlugStrip working better now
 - 2.4.2: 10/19/2020

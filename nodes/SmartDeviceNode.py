@@ -89,51 +89,52 @@ class SmartDeviceNode(polyinterface.Node):
         self.set_energy()
 
     def update(self):
-        asyncio.run(self.dev.update())
+        if self.dev is None:
+            if self.connected:
+                LOGGER.debug(f"{self.pfx} No device")
+                self.set_connected(False)
+            return False
+        try:
+            asyncio.run(self.dev.update())
+            return True
+        except SmartDeviceException as ex:
+            if self.connected:
+                LOGGER.error(f'{self.pfx} failed: {ex}')
+        except Exception as ex:
+            if self.connected:
+                LOGGER.error(f'{self.pfx} failed', exc_info=True)
+        self.set_connected(False)
+        return False
 
     def set_state(self):
         LOGGER.debug(f'dev={self.dev}')
         # This doesn't call set_energy, since that is only called on long_poll's
         # We don't use self.connected here because dev might be good, but device is unplugged
         # So then when it's plugged back in the same dev will still work
-        if self.dev is not None:
-            try:
-                self.update()
-                if self.dev.is_on is True:
-                    if self.dev.is_dimmable:
-                        self.setDriver('ST',self.dev.brightness)
-                        self.setDriver('GV5',int(st2bri(self.dev.brightness)))
-                    else:
-                        self.setDriver('ST',100)
+        if self.update():
+            ocon = self.connected
+            if self.dev.is_on is True:
+                if self.dev.is_dimmable:
+                    self.setDriver('ST',self.dev.brightness)
+                    self.setDriver('GV5',int(st2bri(self.dev.brightness)))
                 else:
-                    self.setDriver('ST',0)
-                if not self.connected:
-                    LOGGER.info(f'{self.pfx} Connection restored')
-                    self.set_connected(True)
-            except SmartDeviceException as ex:
-                if self.connected:
-                    LOGGER.error(f'{self.pfx} failed: {ex}')
-                    self.set_connected(False)
-            except Exception as ex:
-                if self.connected:
-                    LOGGER.error(f'{self.pfx} failed', exc_info=True)
-                    self.set_connected(False)
+                    self.setDriver('ST',100)
+            else:
+                self.setDriver('ST',0)
             # On restore, or initial startup, set all drivers.
-            if self.connected:
+            if not ocon and self.connected:
                 try:
                     self.set_all_drivers()
                 except Exception as ex:
                     LOGGER.error(f'{self.pfx} set_all_drivers failed: {ex}',exc_info=True)
-        else:
-            if self.connected:
-                LOGGER.debug(f"{self.pfx} No device")
-                self.set_connected(False)
 
     # Called by set_state when device is alive, does nothing by default
     def set_all_drivers(self):
         pass
 
     def set_energy(self):
+        if not self.update():
+            return
         if self.dev.has_emeter:
             try:
                 energy = self.dev.emeter_realtime
