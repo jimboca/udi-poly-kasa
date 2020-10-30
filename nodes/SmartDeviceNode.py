@@ -27,7 +27,7 @@ class SmartDeviceNode(polyinterface.Node):
         self.event  = None
         self.connected = None # So start will force setting proper status
         LOGGER.debug(f'{self.pfx} controller={controller} address={address} name={name} host={self.host}')
-        if self.dev.has_emeter:
+        if not self.dev is None and self.dev.has_emeter:
             self.drivers.append({'driver': 'CC', 'value': 0, 'uom': 1}) #amps
             self.drivers.append({'driver': 'CV', 'value': 0, 'uom': 72}) #volts
             self.drivers.append({'driver': 'CPW', 'value': 0, 'uom': 73}) #watts
@@ -88,8 +88,11 @@ class SmartDeviceNode(polyinterface.Node):
         self.set_state()
         self.set_energy()
 
+    def update(self):
+        asyncio.run(self.dev.update())
+
     def set_state(self):
-        LOGGER.debug(f'set_state: dev={self.dev}')
+        LOGGER.debug(f'dev={self.dev}')
         # This doesn't call set_energy, since that is only called on long_poll's
         # We don't use self.connected here because dev might be good, but device is unplugged
         # So then when it's plugged back in the same dev will still work
