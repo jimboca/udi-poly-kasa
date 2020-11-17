@@ -115,12 +115,23 @@ class SmartDeviceNode(polyinterface.Node):
             ocon = self.connected
             if self.dev.is_on is True:
                 if self.dev.is_dimmable:
+                    self.brightness = st2bri(self.dev.brightness)
                     self.setDriver('ST',self.dev.brightness)
                     self.setDriver('GV5',int(st2bri(self.dev.brightness)))
                 else:
+                    self.brightness = 100
                     self.setDriver('ST',100)
             else:
+                self.brightness = 0
                 self.setDriver('ST',0)
+            if self.dev.is_color:
+                hsv = self.dev.hsv
+                self.setDriver('GV3',hsv[0])
+                self.setDriver('GV4',st2bri(hsv[1]))
+                self.setDriver('GV5',st2bri(hsv[2]))
+            if self.dev.is_variable_color_temp:
+                self.setDriver('CLITEMP',self.dev.color_temp)
+
             # On restore, or initial startup, set all drivers.
             if not ocon and self.connected:
                 try:
@@ -144,14 +155,26 @@ class SmartDeviceNode(polyinterface.Node):
                     # insignificant changes
                     if 'current' in energy:
                         self.setDriver('CC',round(energy['current'],3))
+                    if 'current_ma' in energy:
+                        self.setDriver('CC',round(energy['current_ma']/1000,3))
+
                     if 'voltage' in energy:
                         self.setDriver('CV',round(energy['voltage'],1))
+                    if 'voltage_mv' in energy:
+                        self.setDriver('CV',round(energy['voltage_mv']*1000,1))
+
                     if 'power' in energy:
                         self.setDriver('CPW',round(energy['power'],3))
                     elif 'power_mw' in energy:
+                        val = energy['power_mw']
+                        LOGGER.debug(f"{val}")
                         self.setDriver('CPW',round(energy['power_mw']/1000,3))
+
                     if 'total' in energy:
                         self.setDriver('TPW',round(energy['total'],3))
+                    if 'total_wh' in energy:
+                        self.setDriver('TPW',round(energy['total_wh'],3))
+
             except SmartDeviceException as ex:
                 LOGGER.error(f'{self.pfx} failed: {ex}')
             except:

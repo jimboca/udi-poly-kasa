@@ -49,18 +49,9 @@ class SmartBulbNode(SmartDeviceNode):
         if cfg['color']:
             self.drivers.append({'driver': 'GV3', 'value': 0, 'uom': 100}) #hue
             self.drivers.append({'driver': 'GV4', 'value': 0, 'uom': 100}) #sat
+        if cfg['emeter']:
+            self.drivers.append({'driver': 'CPW', 'value': 0, 'uom': 73})            
         super().__init__(controller, controller.address, address, name, dev, cfg)
-
-    def set_all_drivers(self):
-        if self.dev.is_dimmable:
-            self.brightness = st2bri(self.dev.brightness)
-        if self.dev.is_color:
-            hsv = self.dev.hsv
-            self.setDriver('GV3',hsv[0])
-            self.setDriver('GV4',st2bri(hsv[1]))
-            self.setDriver('GV5',st2bri(hsv[2]))
-        if self.dev.is_variable_color_temp:
-            self.setDriver('CLITEMP',self.dev.color_temp)
 
     def set_bri(self,val):
         LOGGER.debug(f'{self.pfx} connected={self.connected} val={val}')
@@ -165,7 +156,6 @@ class SmartBulbNode(SmartDeviceNode):
         LOGGER.info(f'val={val}')
         self.set_color_temp(val)
 
-    # TODO: Better to call get_list_state, set_light_state s
     def cmd_set_color_temp_brightness(self, command):
         if not self.dev.is_variable_color_temp:
             LOGGER.error('{self.pfx} Not supported on this device?')
@@ -185,7 +175,6 @@ class SmartBulbNode(SmartDeviceNode):
             LOGGER.error(f'{self.pfx} color_temp={ct} is to high, using maximum {self.dev.valid_temperature_range[1]}')
             ct = self.dev.valid_temperature_range[1]
         light_state['color_temp'] = ct
-
         LOGGER.debug(f'{self.pfx}     new_state={light_state}')
         try:
             asyncio.run(self.dev.set_light_state(light_state))
