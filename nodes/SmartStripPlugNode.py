@@ -12,7 +12,7 @@ class SmartStripPlugNode(polyinterface.Node):
         self.dev = dev
         self.debug_level = 0
         self.pobj = parent # super changes self.parent
-        # The strip is it's own parent since the plugs are it's children
+        # The strip is the parent since the plugs are it's children
         super(SmartStripPlugNode, self).__init__(self, parent.address, address, name)
         self.controller = controller
 
@@ -23,13 +23,11 @@ class SmartStripPlugNode(polyinterface.Node):
     def shortPoll(self):
         self.check_st()
 
-    def setOn(self, command):
+    def set_on(self):
         self.setDriver('ST', 100)
-        asyncio.run(self.dev.turn_on())
 
-    def setOff(self, command):
+    def set_off(self):
         self.setDriver('ST', 0)
-        asyncio.run(self.dev.turn_off())
 
     def check_st(self):
         LOGGER.debug(f'{self.dev.alias}:check_st: is_on={self.dev.is_on}')
@@ -44,6 +42,19 @@ class SmartStripPlugNode(polyinterface.Node):
     def query(self):
         self.check_st()
         self.reportDrivers()
+
+    def update(self):
+        self.pobj.update()
+
+    def cmd_set_on(self, command):
+        LOGGER.debug(f'{self.dev.alias}:cmd_set_on: is_on={self.dev.is_on}')
+        self.set_on()
+        asyncio.run(self.dev.turn_on())
+
+    def cmd_set_off(self, command):
+        LOGGER.debug(f'{self.dev.alias}:cmd_set_off: is_on={self.dev.is_on}')
+        self.set_off()
+        asyncio.run(self.dev.turn_off())
 
     def l_info(self, name, string):
         LOGGER.info("%s:%s:%s: %s" %  (self.id,self.name,name,string))
@@ -61,6 +72,6 @@ class SmartStripPlugNode(polyinterface.Node):
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 78}]
     id = 'SmartStripPlug'
     commands = {
-        'DON': setOn,
-        'DOF': setOff
+        'DON': cmd_set_on,
+        'DOF': cmd_set_off
     }

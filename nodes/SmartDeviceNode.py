@@ -107,7 +107,7 @@ class SmartDeviceNode(polyinterface.Node):
         return False
 
     def set_state(self):
-        LOGGER.debug(f'dev={self.dev}')
+        LOGGER.debug(f'start: dev={self.dev}')
         # This doesn't call set_energy, since that is only called on long_poll's
         # We don't use self.connected here because dev might be good, but device is unplugged
         # So then when it's plugged back in the same dev will still work
@@ -138,6 +138,7 @@ class SmartDeviceNode(polyinterface.Node):
                     self.set_all_drivers()
                 except Exception as ex:
                     LOGGER.error(f'{self.pfx} set_all_drivers failed: {ex}',exc_info=True)
+        LOGGER.debug(f'end:   dev={self.dev}')
 
     # Called by set_state when device is alive, does nothing by default
     def set_all_drivers(self):

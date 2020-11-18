@@ -111,6 +111,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.4.6: 11/17/2020
+  - [Power Strip Plugs status reverts](https://github.com/jimboca/udi-poly-kasa/issues/12)
 - 2.4.5: 11/16/2020
   - Many fixes for KL430 LED light strips
   - Fixes for Power on all devices

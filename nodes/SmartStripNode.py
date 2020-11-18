@@ -59,6 +59,8 @@ class SmartStripNode(SmartDeviceNode):
             self.setDriver('GV0',1)
         else:
             self.setDriver('GV0',0)
+            return False
+        self.update()
         is_on = False
         # If any are on, then I am on.
         for pnum in range(len(self.dev.children)):
