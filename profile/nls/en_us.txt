@@ -36,17 +36,35 @@ ND-SmartStripPlug-ICON = GenericCtl
 # SmartPlugs
 ND-SmartPlug_NN-NAME = SmartPlug
 ND-SmartPlug_NE-NAME = SmartPlug Energy
-ND-SmartPlug_DN-NAME = SmartPlug Dmmable
+ND-SmartPlug_DN-NAME = SmartPlug Dimmable
 ND-SmartPlug_DE-NAME = SmartPlug Dimmable Energy
 ND-SmartPlug_NN-ICON = GenericCtl
 ND-SmartPlug_NE-ICON = GenericCtl
 ND-SmartPlug_DN-ICON = GenericCtl
 ND-SmartPlug_DE-ICON = GenericCtl
 
+ST-spd-GV5-NAME = Brightness
+ST-spde-GV5-NAME = Brightness
+ST-spde-CC-NAME = Current
+ST-spde-CV-NAME = Voltage
+ST-spde-CPW-NAME = Current Power Used
+ST-spde-TPW-NAME = Total Power Used
 ST-spe-CC-NAME = Current
 ST-spe-CV-NAME = Voltage
 ST-spe-CPW-NAME = Current Power Used
 ST-spe-TPW-NAME = Total Power Used
+
+# SmartDimmer's
+ND-SmartDimmer_DN-NAME = SmartDimmer 
+ND-SmartDimmer_DE-NAME = SmartDimmer Energy
+ND-SmartDimmer_DN-ICON = GenericCtl
+ND-SmartDimmer_DE-ICON = GenericCtl
+ST-sd-GV5-NAME = Brightness
+ST-sde-GV5-NAME = Brightness
+ST-sde-CC-NAME = Current
+ST-sde-CV-NAME = Voltage
+ST-sde-CPW-NAME = Current Power Used
+ST-sde-TPW-NAME = Total Power Used
 
 # SmartBulb's
 ND-SmartBulb_NNNN-NAME = SmartBulb
@@ -55,6 +73,7 @@ ND-SmartBulb_DTNN-NAME = SmartBulb Dimmable Color Temperature
 ND-SmartBulb_DTNE-NAME = SmartBulb Dimmable Color Temperature Energy
 ND-SmartBulb_DNNE-NAME = SmartBulb Dimmable Energy
 ND-SmartBulb_DTCE-NAME = SmartBulb Color Energy
+ND-SmartBulb_DTCN-NAME = SmartBulb Color
 
 ND-SmartBulb_NNNN-ICON = Lamp
 ND-SmartBulb_DNNN-ICON = Lamp
@@ -62,10 +81,7 @@ ND-SmartBulb_DTNN-ICON = Lamp
 ND-SmartBulb_DTNE-ICON = Lamp
 ND-SmartBulb_DNNE-ICON = Lamp
 ND-SmartBulb_DTCE-ICON = Lamp
-
-# SmartLightStrip
-ND-SmartLightStrip_DTCE-NAME = SmartBulb Color Energy
-ND-SmartLightStrip_DTCE-ICON = Lamp
+ND-SmartBulb_DTCN-ICON = Lamp
 
 ST-sb-GV2-NAME = Color Temperature
 ST-sb-GV3-NAME = Hue
@@ -74,10 +90,9 @@ ST-sb-GV5-NAME = Brightness
 ST-sb-RR-NAME = Transition time
 ST-sb-CLITEMP-NAME = Color Temperature
 
-ST-spe-CC-NAME = Current
-ST-spe-CV-NAME = Voltage
-ST-spe-CPW-NAME = Current Power Used
-ST-spe-TPW-NAME = Total Power Used
+# SmartLightStrip
+ND-SmartLightStrip_DTCE-NAME = SmartBulb Color Energy
+ND-SmartLightStrip_DTCE-ICON = Lamp
 
 CMD-BRI-NAME = Brightness
 

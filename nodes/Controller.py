@@ -8,6 +8,7 @@ from node_funcs import get_valid_node_name
 from kasa import Discover
 from nodes import SmartStripNode
 from nodes import SmartPlugNode
+from nodes import SmartDimmerNode
 from nodes import SmartBulbNode
 from nodes import SmartLightStripNode
 LOGGER = polyinterface.LOGGER
@@ -194,6 +195,9 @@ class Controller(polyinterface.Controller):
             elif dev.is_light_strip:
                 type = 'SmartLightStrip'
                 name = dev.alias
+            elif dev.is_dimmable:
+                type = 'SmartDimmer'
+                name = dev.alias
             else:
                 LOGGER.error(f"What is this? {dev}")
                 return False
@@ -207,10 +211,13 @@ class Controller(polyinterface.Controller):
         # Add Based on device type.  SmartStrip is a unique type, all others
         # are handled by SmartDevice
         #
+#         LOGGER.error(f"alb:controller.py:{cfg['type']}")
         if cfg['type'] == 'SmartStrip':
             node = self.addNode(SmartStripNode(self, cfg['address'], cfg['name'],  dev=dev, cfg=cfg))
         elif cfg['type'] == 'SmartPlug':
             node = self.addNode(SmartPlugNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
+        elif cfg['type'] == 'SmartDimmer':
+            node = self.addNode(SmartDimmerNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
         elif cfg['type'] == 'SmartBulb':
             node = self.addNode(SmartBulbNode(self, cfg['address'], cfg['name'], dev=dev, cfg=cfg))
         elif cfg['type'] == 'SmartLightStrip':
