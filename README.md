@@ -111,6 +111,8 @@ Open the Polyglot web page, go to nodeserver store and click "Update" for "Kasa"
 Then restart the Kasa nodeserver by selecting it in the Polyglot dashboard and select Control -> Restart, then watch the log to make sure everything goes well.
 
 # Release Notes
+- 2.5.0: 04/28/2021
+  - [Added HS220 support](https://github.com/jimboca/udi-poly-kasa/pull/18) Thanks to @albrandwood
 - 2.4.7: 12/10/2020
   - Check python version on startup
 - 2.4.6: 11/17/2020
