@@ -261,10 +261,10 @@ class Controller(polyinterface.Controller):
     def set_debug_level(self,level):
         LOGGER.info(f'level={level}')
         if level is None:
-            level = 20
+            level = 10
         level = int(level)
         if level == 0:
-            level = 20
+            level = 10
         LOGGER.info(f'Seting GV1 to {level}')
         self.setDriver('GV1', level)
         # 0=All 10=Debug are the same because 0 (NOTSET) doesn't show everything.
