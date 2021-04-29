@@ -1,7 +1,7 @@
 #
-# TP Link Kasa Smart Bulb Node
+# TP Link Kasa Smart Plug Node
 #
-# This code is used for bulbs
+# This code is used for plugs
 #
 import polyinterface
 from kasa import SmartPlug,SmartDeviceException
@@ -19,7 +19,7 @@ class SmartPlugNode(SmartDeviceNode):
         # All devices have these.
         self.drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 78},
-            {'driver': 'GV0', 'value': 0, 'uom': 2} #connection state
+            {'driver': 'GV0', 'value': 0, 'uom': 2}, #connection state
         ]
         if dev is not None:
             # Figure out the id based in the device info
@@ -61,3 +61,4 @@ class SmartPlugNode(SmartDeviceNode):
         'DON': cmd_set_on,
         'DOF': cmd_set_off,
     }
+

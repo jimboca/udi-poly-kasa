@@ -8,6 +8,7 @@ from .SmartDeviceNode    import SmartDeviceNode
 from .SmartStripPlugNode import SmartStripPlugNode
 from .SmartStripNode     import SmartStripNode
 from .SmartPlugNode      import SmartPlugNode
+from .SmartDimmerNode    import SmartDimmerNode
 from .SmartBulbNode      import SmartBulbNode
 from .SmartLightStripNode import SmartLightStripNode
 from .Controller         import Controller
